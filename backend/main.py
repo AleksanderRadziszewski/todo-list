@@ -15,7 +15,7 @@ app.add_middleware(
 app.include_router(tasks_router)
 
 @app.get("/")
-def read_root():
+def read_root() -> dict:
     return {
         "message": "Welcome to the To-Do App API",
         "version": "v0.1.2-beta",

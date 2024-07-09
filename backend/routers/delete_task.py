@@ -5,7 +5,7 @@ from models import Task, get_db
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
 @router.delete("/{task_id}")
-def delete_task(task_id: int, db: Session = Depends(get_db)):
+def delete_task(task_id: int, db: Session = Depends(get_db)) -> dict:
     """
     Delete a task.
 

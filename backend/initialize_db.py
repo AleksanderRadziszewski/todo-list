@@ -1,4 +1,4 @@
-from models import Base, engine 
+from models import Base, engine
 
 """
 This script is used to initialize the database for the application. 
@@ -15,7 +15,7 @@ Note:
 """
 
 # Function to initialize the database
-def init_db():
+def init_db() -> None:
     # Create all tables in the database
     # This is equivalent to "Create Table" statements in raw SQL
     Base.metadata.create_all(bind=engine)

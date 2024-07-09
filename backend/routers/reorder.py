@@ -6,7 +6,7 @@ from schemas.reorder_request import ReorderRequest
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
 @router.post("/reorder")
-def reorder_tasks(request: ReorderRequest, db: Session = Depends(get_db)):
+def reorder_tasks(request: ReorderRequest, db: Session = Depends(get_db)) -> dict:
     """
     Reorder tasks by their IDs.
 
@@ -32,6 +32,6 @@ def reorder_tasks(request: ReorderRequest, db: Session = Depends(get_db)):
         db_task = db.query(Task).filter(Task.id == task_data.id).first()
         if not db_task:
             raise HTTPException(status_code=404, detail=f"Task with id {task_data.id} not found")
-        db_task.position = task_data.position
+        db_task.position = task_data.position  # type: ignore
     db.commit()
     return {"message": "Tasks reordered successfully"}
