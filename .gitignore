@@ -4,6 +4,9 @@ venv/
 # pycache
 **/__pycache__
 
+#mypy
+.mypy_cache/
+
 # Frontend зависимости
 /node_modules/
 

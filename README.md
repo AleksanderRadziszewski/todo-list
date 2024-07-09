@@ -174,7 +174,7 @@ The following features are planned for upcomming releases:
 
 * [x] <s>onDelete: add spinner loading.</s>
 * [x] <s>Ruff: Integrate a linter to maintain code quality.</s>
-* [ ] Mypy: Add static type checking to ensure code reliability and correctness.
+* [x] <s>Mypy: Add static type checking to ensure code reliability and correctness.</s>
 * [ ] Docker: Set up CI/CD.
 * [ ] New Design: Update the UI to a more advanced version with animation.
 * [ ] Edit Task: Allow users to edit the description of existing tasks.

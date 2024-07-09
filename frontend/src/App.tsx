@@ -132,6 +132,21 @@ const App: React.FC = () => {
     };
   }, [handleDragEnd, tasks]);
 
+  const updateTaskTitle = async (taskId:number, title:string) => {
+    const response = await fetch(`http://localhost:8000/tasks/${taskId}/title`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title })
+    });
+    if (!response.ok) {
+        throw new Error('Failed to update task title');
+    }
+    return await response.json();
+  };
+
+
   return (
     <div id="App">
       <div id="MainWrapper">
@@ -146,6 +161,7 @@ const App: React.FC = () => {
           onReorder={handleReorder}
           onToggleCompleted={handleToggleCompleted}
           onDelete={handleDeleteTask}
+          updateTaskTitle={updateTaskTitle}
         />
 
         <Footer />

@@ -15,9 +15,10 @@ interface TaskListProps {
   onReorder: (tasks: TaskType[]) => void;
   onToggleCompleted: (id: number) => void;
   onDelete: (id: number) => void;
+  updateTaskTitle: (id:number, title: string) => void;
 }
 
-const TaskList: React.FC<TaskListProps> = ({ tasks, onReorder, onToggleCompleted, onDelete }) => {
+const TaskList: React.FC<TaskListProps> = ({ tasks, onReorder, onToggleCompleted, onDelete, updateTaskTitle}) => {
   return (
     <Reorder.Group
       className="TaskList"
@@ -30,7 +31,8 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onReorder, onToggleCompleted
           key={task.id}
           task={task}
           onToggleCompleted={onToggleCompleted}
-          onDelete={onDelete}
+          onDelete={onDelete} 
+          onUpdateTitle={updateTaskTitle}          
         />
       ))}
     </Reorder.Group>
