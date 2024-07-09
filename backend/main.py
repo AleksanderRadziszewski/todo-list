@@ -22,7 +22,8 @@ def read_root() -> dict:
         "endpoints": {
             "/tasks": "Retrieve all tasks",
             "/tasks/{id}": "Retrieve, update, or delete a specific task by ID",
-            "/tasks/reorder": "Reorder tasks"
+            "/tasks/reorder": "Reorder tasks",
+            "/tasks/{task_id}/title": "Update task title"
         },
         "documentation": "https://github.com/e-Nicko/todo-app"
     }

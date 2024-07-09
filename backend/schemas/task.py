@@ -17,4 +17,7 @@ class TaskResponse(BaseModel):
 
     class Config:
         orm_mode = True
-        from_attributes = True  # Добавьте эту строку
+        from_attributes = True
+
+class TaskTitleUpdate(BaseModel):
+    title: str
