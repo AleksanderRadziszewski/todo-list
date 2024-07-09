@@ -14,3 +14,7 @@ class TaskResponse(BaseModel):
     title: str
     completed: bool
     createdAt: datetime
+
+    class Config:
+        orm_mode = True
+        from_attributes = True  # Добавьте эту строку
