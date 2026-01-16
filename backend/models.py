@@ -8,12 +8,12 @@ from sqlalchemy.orm import DeclarativeBase
 
 load_dotenv()
 
-DB_HOST: str = os.getenv("DB_HOST", "localhost")
-DB_USER: str = os.getenv("DB_USER", "user")
-DB_PASSWORD: str = os.getenv("DB_PASSWORD", "password")
-DB_NAME: str = os.getenv("DB_NAME", "database")
+POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "localhost")
+POSTGRES_USER: str = os.getenv("POSTGRES_USER", "user")
+POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "password")
+POSTGRES_DB: str = os.getenv("POSTGRES_DB", "database")
 
-DATABASE_URL: str = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
+DATABASE_URL: str = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -23,7 +23,7 @@ class Base(DeclarativeBase):
 
 class Task(Base):
     __tablename__ = 'tasks'
-    
+
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     completed = Column(Boolean, default=False)
@@ -36,7 +36,7 @@ Base.metadata.create_all(bind=engine)
 def get_db() -> Generator[Session, None, None]:
     """
     Dependency to get the database session.
-    
+
     Yields:
         db (Session): Database session.
     """

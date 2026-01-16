@@ -16,7 +16,6 @@ class TaskResponse(BaseModel):
     createdAt: datetime
 
     class Config:
-        orm_mode = True
         from_attributes = True
 
 class TaskTitleUpdate(BaseModel):
