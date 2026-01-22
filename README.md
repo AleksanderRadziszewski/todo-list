@@ -9,20 +9,11 @@
 
 
 This "To-Do" application was developed as an educational project to demonstrate the interaction between a Python/FastAPI backend and a React/TypeScript frontend.
-The project provide a simple, functional demo of a to-do application that allows users to add, delete, and mark tasks as complete. 
+The project provide a simple, functional demo of a to-do application that allows users to add, delete, and mark tasks as complete.
 The frontend design is intentionally kept minimal with basic CSS styles to ensure clarity and ease of understanding for educational purposes.
 
 <img src="screenshots/todo-app-v0.1.1.gif" width="100%">
 
-<hr>
-
-- A detailed tutorial article on creating this To-Do application is available at: <br>
-[https://webadventures.ru/todo-app-python-react/](https://webadventures.ru/todo-app-python-react/) (Russian language)
-- Design mockups: <br>
-[Figma - ToDo app](https://www.figma.com/design/82XLv7BujFtQfscglOLDju/ToDo-App?node-id=0-1&t=mzFv79mBFzUP2Job-0)
-
-
-<br/>
 
 ## ⚙️ Technology Stack
 
@@ -41,44 +32,6 @@ The frontend design is intentionally kept minimal with basic CSS styles to ensur
 - **TypeScript** - a statically-typed superset of JavaScript.
 - **Vite** - a modern build tool for creating and developing web applications with hot-reloading and more.
 
-## 📂 Project Structure
-
-```markdown
-    todo-app/
-    │
-    ├── backend/
-    │   ├── __init__.py
-    │   ├── main.py
-    │   ├── models.py
-    │   ├── initialize_db.py
-    ├── routers/
-    │   ├── create_task.py
-    │   ├── delete_task.py
-    │   ├── read_tasks.py
-    │   ├── reorder.py
-    │   ├── update_task.py
-    │   └── __init__.py
-    │   ├── schemas/
-    │   │   ├── reorder_request.py
-    │   │   └── task.py
-    │   └── requirements.txt
-    │
-    ├── frontend/
-    │   ├── src/
-    │   │   ├── components/
-    │   │   ├── pages/
-    │   │   ├── App.tsx
-    │   │   ├── main.tsx
-    │   │   └── ...
-    │   ├── index.html
-    │   ├── package.json
-    │   ├── vite.config.ts
-    │   └── ...
-    │
-    ├── screenshots
-    │
-    └── README.md
-```
 
 <br/>
 
@@ -115,7 +68,7 @@ The frontend design is intentionally kept minimal with basic CSS styles to ensur
         DB_NAME=todo_db
         ```
         *This constants will be used in `models.py` file for connecting to database.*<br>
-        *For making `.env` you can simply rename template `.env.example`  
+        *For making `.env` you can simply rename template `.env.example`
 
 3.    Activate the Python virtual environment (if used):
         ```bash
@@ -144,7 +97,7 @@ The frontend design is intentionally kept minimal with basic CSS styles to ensur
 
         npx vite
 
-        
+
     The frontend will be running and available at: http://127.0.0.1:5173
 
 <br/>
@@ -154,36 +107,42 @@ The frontend design is intentionally kept minimal with basic CSS styles to ensur
 ## Alternative way to start app
 In the root of project directory run:
 
- -   Windows: start `start.ps1` 
-     ``` 
-        .\start.ps1 
+ -   Windows: start `start.ps1`
+     ```
+        .\start.ps1
      ```
 
  -   Linux:
      Make the script executable: `chmod +x start.sh` and then start:
-     ``` 
+     ```
         .\start.sh
      ```
 
+### Docker Setup
 
-<br/>
+1. Ensure Docker is installed on your system.
 
-## TO-DO
-**Future Enhancements** 🌟 <br/>
-The following features are planned for upcomming releases:
+2. Build the backend image:
+    ```bash
+    docker build -f backend/Dockerfile -t todo-app-backend .
+    ```
 
-* [x] <s>onDelete: add spinner loading.</s>
-* [x] <s>Ruff: Integrate a linter to maintain code quality.</s>
-* [x] <s>Mypy: Add static type checking to ensure code reliability and correctness.</s>
-* [ ] Docker: Set up CI/CD.
-* [ ] New Design: Update the UI to a more advanced version with animation.
-* [ ] Edit Task: Allow users to edit the description of existing tasks.
-* [x] <s>Reorder Tasks: Enable users to change the order of tasks in the list.</s>
-* [ ] Framer Motion: Exit animation for list's Task
-* [ ] PWA: add Progressive Web Application functionality
+3. Build the frontend image:
+    ```bash
+    docker build -f frontend/Dockerfile -t todo-app-frontend .
+    ```
 
-<br/>
+4. Run the containers:
+    ```bash
+    docker run -p 8000:8000 --env-file backend/.env todo-app-backend
+    docker run -p 5173:5173 todo-app-frontend
+    ```
 
+5. Access the application:
+    - Backend API: http://localhost:8000
+    - Frontend: http://localhost:5173
+
+Alternatively, use Docker Compose for simplified orchestration by creating a `docker-compose.yml` file in the project root.
 
 ## License
 
