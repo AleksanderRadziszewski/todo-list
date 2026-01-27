@@ -1,0 +1,52 @@
+trigger:
+- none
+pool: br-agent
+variables: 
+- group: 'todo-variables-kv'
+
+stages:
+  - stage: Build
+    jobs:
+      - job: Build
+        displayName: Build job
+
+        steps:
+        - script: |
+            sudo apt update
+            sudo apt upgrade -y
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+            sudo apt update
+            sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+            sudo systemctl status docker
+          displayName: Install docker
+
+        - script: |
+              sudo docker build -f backend/Dockerfile -t backend:$(Build.SourceVersion) backend/
+              sudo docker images backend:latest --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.CreatedAt}}"
+          displayName: Build backend 
+
+        - script: |
+              sudo docker build -f frontend/Dockerfile -t frontend:$(Build.SourceVersion) frontend/
+              sudo docker images frontend:latest --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.CreatedAt}}"
+          displayName: Build frontend 
+
+  - stage: Release
+    jobs:
+      - job: Release
+        variables: 
+          dockerhub_user: aleksander1991
+        steps:
+        - script: |
+            sudo docker login -u $(dockerhub_user) -p $(DOCKERHUB-PASSWORD)
+            sudo docker image tag backend:$(Build.SourceVersion) $(dockerhub_user)/todo-app-backend:latest
+            sudo docker image tag frontend:$(Build.SourceVersion) $(dockerhub_user)/todo-app-frontend:latest
+            sudo docker image tag backend:$(Build.SourceVersion) $(dockerhub_user)/todo-app-backend:$(Build.SourceVersion)
+            sudo docker image tag frontend:$(Build.SourceVersion) $(dockerhub_user)/todo-app-frontend:$(Build.SourceVersion)
+            sudo docker push --all-tags $(dockerhub_user)/todo-app-backend
+            sudo docker push --all-tags $(dockerhub_user)/todo-app-frontend
+          displayName: Release backend and frontend
+         
+          env:
+            DOCKERHUB-PASSWORD: $(DOCKERHUB-PASSWORD)
+        
