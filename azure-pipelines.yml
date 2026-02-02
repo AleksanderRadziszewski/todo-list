@@ -51,7 +51,7 @@ stages:
           inputs:
               app_location: 'src' # App source code path relative to cwd
               # api_location: 'api' # Api source code path relative to cwd
-              output_location: 'public' # Built app content directory relative to app_location - optional
+              # output_location: 'public' # Built app content directory relative to app_location - optional
               cwd: '$(System.DefaultWorkingDirectory)/frontend' # Working directory - optional
               azure_static_web_apps_api_token: $(deployment_token)
 
