@@ -45,6 +45,16 @@ stages:
             sudo docker image tag frontend:$(Build.SourceVersion) $(dockerhub_user)/todo-app-frontend:$(Build.SourceVersion)
             sudo docker push --all-tags $(dockerhub_user)/todo-app-backend
             sudo docker push --all-tags $(dockerhub_user)/todo-app-frontend
+        - checkout: self
+          submodules: true
+        - task: AzureStaticWebApp@0
+          inputs:
+              app_location: 'src' # App source code path relative to cwd
+              # api_location: 'api' # Api source code path relative to cwd
+              output_location: 'public' # Built app content directory relative to app_location - optional
+              cwd: '$(System.DefaultWorkingDirectory)/frontend' # Working directory - optional
+              azure_static_web_apps_api_token: $(deployment_token)
+
           displayName: Release backend and frontend
          
           env:
