@@ -1,7 +1,7 @@
 trigger:
 - none
 pool: br-agent
-variables: 
+variables:
 - group: 'todo-variables-kv'
 
 stages:
@@ -24,17 +24,17 @@ stages:
         - script: |
               sudo docker build -f backend/Dockerfile -t backend:$(Build.SourceVersion) backend/
               sudo docker images backend:latest --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.CreatedAt}}"
-          displayName: Build backend 
+          displayName: Build backend
 
         - script: |
-              sudo docker build -f frontend/Dockerfile -t frontend:$(Build.SourceVersion) frontend/
+              sudo docker build -f frontend/Dockerfile.local -t frontend:$(Build.SourceVersion) frontend/
               sudo docker images frontend:latest --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.CreatedAt}}"
-          displayName: Build frontend 
+          displayName: Build frontend
 
   - stage: Release
     jobs:
       - job: Release
-        variables: 
+        variables:
           dockerhub_user: aleksander1991
         steps:
         - script: |
@@ -56,7 +56,6 @@ stages:
               azure_static_web_apps_api_token: $(deployment_token)
 
           displayName: Release backend and frontend
-         
+
           env:
             DOCKERHUB-PASSWORD: $(DOCKERHUB-PASSWORD)
-        
