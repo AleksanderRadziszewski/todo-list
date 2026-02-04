@@ -21,7 +21,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await fetch("http://localhost:8000/tasks/");
+        const response = await fetch("http://todo-app-backend-f3ecf3cddmethxb3.westeurope-01.azurewebsites.net/tasks/");
         const data = await response.json();
         if (data.length === 0) {
           console.log("No tasks found");
