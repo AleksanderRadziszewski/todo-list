@@ -37,6 +37,8 @@ stages:
             sudo docker push --all-tags $(DOCKERHUB-USER)/todo-app-backend
         - checkout: self
           submodules: true
+
+        
         - task: AzureStaticWebApp@0
           inputs:
               app_location: 'src' # App source code path relative to cwd
