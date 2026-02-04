@@ -30,7 +30,7 @@ stages:
     jobs:
       - job: Release
         variables:
-          dockerhub_user: aleksander1991
+          dockerhub_user: $(DOCKERHUB-USER)
         steps:
         - script: |
             sudo docker login -u $(dockerhub_user) -p $(DOCKERHUB-PASSWORD)
@@ -51,3 +51,4 @@ stages:
 
           env:
             DOCKERHUB-PASSWORD: $(DOCKERHUB-PASSWORD)
+            DOCKERHUB-USER: $(DOCKERHUB-USER)
