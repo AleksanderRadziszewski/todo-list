@@ -21,7 +21,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await fetch("http://todo-app-backend-f3ecf3cddmethxb3.westeurope-01.azurewebsites.net/tasks/");
+        const response = await fetch("https://todo-app-backend-f3ecf3cddmethxb3.westeurope-01.azurewebsites.net/tasks/");
         const data = await response.json();
         if (data.length === 0) {
           console.log("No tasks found");
@@ -53,7 +53,7 @@ const App: React.FC = () => {
   // Function to add a new task
   async function addTask(title: string) {
     setAddTaskLoading(true);
-    const response = await fetch("http://todo-app-backend-f3ecf3cddmethxb3.westeurope-01.azurewebsites.net/tasks/", {
+    const response = await fetch("https://todo-app-backend-f3ecf3cddmethxb3.westeurope-01.azurewebsites.net/tasks/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -68,7 +68,7 @@ const App: React.FC = () => {
     const task = tasks.find((task) => task.id === id);
     if (task) {
       const updatedTask = { ...task, completed: !task.completed };
-      const response = await fetch(`http://todo-app-backend-f3ecf3cddmethxb3.westeurope-01.azurewebsites.net/tasks/${id}`, {
+      const response = await fetch(`https://todo-app-backend-f3ecf3cddmethxb3.westeurope-01.azurewebsites.net/tasks/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -83,7 +83,7 @@ const App: React.FC = () => {
 
   // Handle deleting a task
   const handleDeleteTask = async (id: number) => {
-    const response = await fetch(`http://todo-app-backend-f3ecf3cddmethxb3.westeurope-01.azurewebsites.net/tasks/${id}`, {
+    const response = await fetch(`https://todo-app-backend-f3ecf3cddmethxb3.westeurope-01.azurewebsites.net/tasks/${id}`, {
       method: "DELETE",
     });
     if (response.ok) {
@@ -104,7 +104,7 @@ const App: React.FC = () => {
     console.log("Sending reordered tasks to server:", reorderedTasks);
 
     try {
-      const response = await fetch("http://todo-app-backend-f3ecf3cddmethxb3.westeurope-01.azurewebsites.net/tasks/reorder", {
+      const response = await fetch("https://todo-app-backend-f3ecf3cddmethxb3.westeurope-01.azurewebsites.net/tasks/reorder", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -133,7 +133,7 @@ const App: React.FC = () => {
   }, [handleDragEnd, tasks]);
 
   const updateTaskTitle = async (taskId:number, title:string) => {
-    const response = await fetch(`http://todo-app-backend-f3ecf3cddmethxb3.westeurope-01.azurewebsites.net/tasks/${taskId}/title`, {
+    const response = await fetch(`https://todo-app-backend-f3ecf3cddmethxb3.westeurope-01.azurewebsites.net/tasks/${taskId}/title`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json'
