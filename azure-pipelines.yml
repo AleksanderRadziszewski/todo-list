@@ -29,14 +29,12 @@ stages:
   - stage: Release
     jobs:
       - job: Release
-        variables:
-          dockerhub_user: $(DOCKERHUB-USER)
         steps:
         - script: |
-            sudo docker login -u $(dockerhub_user) -p $(DOCKERHUB-PASSWORD)
-            sudo docker image tag backend:$(Build.SourceVersion) $(dockerhub_user)/todo-app-backend:latest
-            sudo docker image tag backend:$(Build.SourceVersion) $(dockerhub_user)/todo-app-backend:$(Build.SourceVersion)
-            sudo docker push --all-tags $(dockerhub_user)/todo-app-backend
+            sudo docker login -u $(DOCKERHUB-USER) -p $(DOCKERHUB-PASSWORD)
+            sudo docker image tag backend:$(Build.SourceVersion) $(DOCKERHUB-USER)/todo-app-backend:latest
+            sudo docker image tag backend:$(Build.SourceVersion) $(DOCKERHUB-USER)/todo-app-backend:$(Build.SourceVersion)
+            sudo docker push --all-tags $(DOCKERHUB-USER)/todo-app-backend
         - checkout: self
           submodules: true
         - task: AzureStaticWebApp@0
