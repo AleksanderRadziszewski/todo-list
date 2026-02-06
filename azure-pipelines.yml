@@ -43,10 +43,11 @@ stages:
           inputs:
               app_location: '/frontend' # App source code path relative to cwd
               output_location: '/dist' # Built app content directory relative to app_location - optional
-              azure_static_web_apps_api_token: $(deployment_token)
+              azure_static_web_apps_api_token: $(DEPLOYMENT-TOKEN)
 
           displayName: Release backend and frontend
 
           env:
             DOCKERHUB-PASSWORD: $(DOCKERHUB-PASSWORD)
             DOCKERHUB-USER: $(DOCKERHUB-USER)
+            DEPLOYMENT-TOKEN: $(DEPLOYMENT-TOKEN)
