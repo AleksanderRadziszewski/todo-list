@@ -23,7 +23,6 @@ jobs:
   - task: AzureStaticWebApp@0
     inputs:
       azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN_ASHY_MUD_08F1BFE03)
-      app_location: "src" # App source code path
-      cwd: "frontend"
-      output_location: "dist" # Built app content directory - optional
+      app_location: "/frontend" # App source code path
+      output_location: "/dist" # Built app content directory - optional
 
