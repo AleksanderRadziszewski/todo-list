@@ -3,6 +3,7 @@ trigger:
 pool: br-agent
 variables:
 - group: 'todo-variables-kv'
+- group: 'tokens'
 
 stages:
   - stage: Build
@@ -43,11 +44,11 @@ stages:
           inputs:
               app_location: '/frontend' # App source code path relative to cwd
               output_location: '/dist' # Built app content directory relative to app_location - optional
-              azure_static_web_apps_api_token: $(DEPLOYMENT-TOKEN)
+              azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN)
 
           displayName: Release backend and frontend
 
           env:
             DOCKERHUB-PASSWORD: $(DOCKERHUB-PASSWORD)
             DOCKERHUB-USER: $(DOCKERHUB-USER)
-            DEPLOYMENT-TOKEN: $(DEPLOYMENT-TOKEN)
+            AZURE_STATIC_WEB_APPS_API_TOKEN: $(AZURE_STATIC_WEB_APPS_API_TOKEN)
