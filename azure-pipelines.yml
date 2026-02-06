@@ -41,9 +41,8 @@ stages:
 
         - task: AzureStaticWebApp@0
           inputs:
-              app_location: 'src' # App source code path relative to cwd
-              output_location: 'dist' # Built app content directory relative to app_location - optional
-              cwd: '$(System.DefaultWorkingDirectory)/frontend' # Working directory - optional
+              app_location: '/frontend' # App source code path relative to cwd
+              output_location: '/dist' # Built app content directory relative to app_location - optional
               azure_static_web_apps_api_token: $(deployment_token)
 
           displayName: Release backend and frontend
