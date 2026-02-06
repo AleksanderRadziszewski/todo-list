@@ -1,7 +1,13 @@
 name: Azure Static Web Apps CI/CD
 
+pr:
+  branches:
+    include:
+      - dev
 trigger:
- - none 
+  branches:
+    include:
+      - dev
 
 jobs:
 - job: build_and_deploy_job
@@ -18,5 +24,6 @@ jobs:
     inputs:
       azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN_ASHY_MUD_08F1BFE03)
       app_location: "/src" # App source code path
+      api_location: "" # Api source code path - optional
       output_location: "/dist" # Built app content directory - optional
 
