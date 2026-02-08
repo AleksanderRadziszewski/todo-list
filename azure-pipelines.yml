@@ -1,11 +1,11 @@
 trigger:
 - none
-pool: br-agent
 variables:
 - group: 'todo-variables-kv'
 
 stages:
   - stage: Build
+    pool: br-agent
     jobs:
       - job: Build
         displayName: Build job
@@ -28,6 +28,8 @@ stages:
           displayName: Build backend
 
   - stage: Release
+    pool:
+      vmImage: 'ubuntu-latest'
     jobs:
       - job: Release
         steps:
