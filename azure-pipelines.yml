@@ -1,6 +1,7 @@
 trigger:
 - none
-pool: br-agent
+pool:
+  vmImage: ubuntu-latest
 variables:
 - group: 'todo-variables-kv'
 
