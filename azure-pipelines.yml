@@ -3,7 +3,6 @@ trigger:
 pool: br-agent
 variables:
 - group: 'todo-variables-kv'
-- group: 'tokens'
 
 stages:
   - stage: Build
@@ -39,6 +38,7 @@ stages:
         - checkout: self
           submodules: true
 
+        - script: echo "jestem tutaj i moj docker user to $(DOCKERHUB-USER)"
 
         - task: AzureStaticWebApp@0
           inputs:
@@ -51,4 +51,4 @@ stages:
           env:
             DOCKERHUB-PASSWORD: $(DOCKERHUB-PASSWORD)
             DOCKERHUB-USER: $(DOCKERHUB-USER)
-            AZURE_STATIC_WEB_APPS_API_TOKEN: $(AZURE_STATIC_WEB_APPS_API_TOKEN)
+            AZURE_STATIC_WEB_APPS_API_TOKEN: $(AZURE-STATIC-WEB-APPS-API-TOKEN)
