@@ -44,7 +44,7 @@ stages:
           inputs:
               app_location: '/frontend' # App source code path relative to cwd
               output_location: '/dist' # Built app content directory relative to app_location - optional
-              azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN)
+              azure_static_web_apps_api_token: $(AZURE-STATIC-WEB-APPS-API-TOKEN)
 
           displayName: Release backend and frontend
 
