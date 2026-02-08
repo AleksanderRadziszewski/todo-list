@@ -39,7 +39,7 @@ stages:
         steps:
         - task: AzureStaticWebApp@0
           inputs:
-              app_location: '/frontend' # App source code path relative to cwd
-              output_location: '/dist' # Built app content directory relative to app_location - optional
+              app_location: '/frontend'
+              output_location: '/dist' 
               azure_static_web_apps_api_token: $(AZURE-STATIC-WEB-APPS-API-TOKEN)
           displayName: Deploy Azure Static Web App
