@@ -37,14 +37,10 @@ stages:
             sudo docker push --all-tags $(DOCKERHUB-USER)/todo-app-backend
         - checkout: self
           submodules: true
-
-        - script: echo "jestem tutaj i moj docker user to $(DOCKERHUB-USER)"
-
         - task: AzureStaticWebApp@0
           inputs:
               app_location: '/frontend' # App source code path relative to cwd
               output_location: '/dist' # Built app content directory relative to app_location - optional
-              skip_app_build: false
               skip_api_build: true
               azure_static_web_apps_api_token: $(AZURE-STATIC-WEB-APPS-API-TOKEN)
           displayName: Deploy Azure Static Web App
