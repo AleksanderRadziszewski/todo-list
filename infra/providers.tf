@@ -1,4 +1,5 @@
 terraform {
+  backend "azurerm" {}
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -10,9 +11,4 @@ terraform {
 
 provider "azurerm" {
   features {}
-}
-
-resource "azurerm_resource_group" "my_first_app_rg" {
-    name = "my_first_app"
-    location = "West Europe"
 }

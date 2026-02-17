@@ -32,6 +32,11 @@ The frontend design is intentionally kept minimal with basic CSS styles to ensur
 - **TypeScript** - a statically-typed superset of JavaScript.
 - **Vite** - a modern build tool for creating and developing web applications with hot-reloading and more.
 
+### Infra
+
+- **Microsoft Azure Devops** - a comprehensive SaaS platform.
+- **Terraform** - IaaC tool.
+
 
 <br/>
 
@@ -143,6 +148,26 @@ In the root of project directory run:
     - Frontend: http://localhost:5173
 
 Alternatively, use Docker Compose for simplified orchestration by creating a `docker-compose.yml` file in the project root.
+
+## 🚀 CI/CD Pipeline
+
+This project uses **Azure Pipelines** for automated building and deployment:
+
+### Build Stage
+- Installs Docker on the build agent
+- Builds the backend Docker image
+- Pushes the image to Docker Hub with version tags
+
+### Release Stage
+- Deploys the frontend to Azure Static Web Apps
+- Automatically triggers on pipeline completion
+
+See `azure-pipelines.yml` for pipeline configuration details.
+
+### Result
+![swa](https://github.com/user-attachments/assets/846f364c-aa80-48ad-b49d-4839fcfecb14)
+
+
 
 ## License
 
