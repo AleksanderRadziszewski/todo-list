@@ -149,6 +149,10 @@ In the root of project directory run:
 
 Alternatively, use Docker Compose for simplified orchestration by creating a `docker-compose.yml` file in the project root.
 
+## 🚀 CI/CD Pipeline
+
+This project uses **Azure Pipelines** for automated building and deployment:
+
 ### Build Stage
 - Installs Docker on the build agent
 - Builds the backend Docker image
