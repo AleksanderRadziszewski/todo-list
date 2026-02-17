@@ -149,6 +149,22 @@ In the root of project directory run:
 
 Alternatively, use Docker Compose for simplified orchestration by creating a `docker-compose.yml` file in the project root.
 
+### Build Stage
+- Installs Docker on the build agent
+- Builds the backend Docker image
+- Pushes the image to Docker Hub with version tags
+
+### Release Stage
+- Deploys the frontend to Azure Static Web Apps
+- Automatically triggers on pipeline completion
+
+See `azure-pipelines.yml` for pipeline configuration details.
+
+### Result
+![swa](https://github.com/user-attachments/assets/846f364c-aa80-48ad-b49d-4839fcfecb14)
+
+
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
