@@ -32,6 +32,11 @@ The frontend design is intentionally kept minimal with basic CSS styles to ensur
 - **TypeScript** - a statically-typed superset of JavaScript.
 - **Vite** - a modern build tool for creating and developing web applications with hot-reloading and more.
 
+### Infra
+
+- **Microsoft Azure Devops** - a comprehensive SaaS platform.
+- **Terraform** - IaaC tool.
+
 
 <br/>
 
