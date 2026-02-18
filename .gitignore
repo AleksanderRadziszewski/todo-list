@@ -22,6 +22,16 @@ venv/
 .env.test.local
 .env.production.local
 
+# infra
+./infra/.terraform/
+*.tfvars
+*.tfvars.json
+./infra/crash.log
+./infra/override.tf
+./infra/override.tf.json
+*_override.tf
+*_override.tf.json
+
 # Директории редакторов и инструментов
 #.idea/
 #.vscode/
