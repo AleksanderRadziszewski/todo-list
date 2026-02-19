@@ -8,7 +8,12 @@ terraform {
   }
   required_version = "=1.14.4"
 }
-
 provider "azurerm" {
   features {}
+  subscription_id = var.subscription_id
+}
+
+resource "azurerm_resource_group" "rg-todo-app-dev" {
+    name = "rg-todo-app-dev"
+    location = "West Europe"
 }
