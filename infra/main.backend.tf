@@ -23,16 +23,3 @@ resource "azurerm_linux_web_app" "todo-app-as" {
     type = "SystemAssigned"
   }
 }
-
-# resource "azurerm_container_registry" "acr" {
-#   name                = "docker registry"
-#   resource_group_name = azurerm_resource_group.rg-todo-app-dev.name
-#   location            = azurerm_resource_group.rg-todo-app-dev.location
-#   sku                 = "Basic"
-#   admin_enabled       = false
-# }
-
-
-
-
-# }
