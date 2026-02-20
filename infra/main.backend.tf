@@ -13,6 +13,7 @@ resource "azurerm_linux_web_app" "todo-app-as" {
   service_plan_id     = azurerm_service_plan.todo-app-service-plan-dev.id
 
   site_config {
+    always_on = false
     application_stack {
       docker_image_name        = "todo-app-backend:latest"
       docker_registry_url      = "https://index.docker.io/"

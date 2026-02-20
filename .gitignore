@@ -27,9 +27,9 @@ infra/.terraform/
 infra/dev.variables.tf
 *.tfvars
 *.tfvars.json
-./infra/crash.log
-./infra/override.tf
-./infra/override.tf.json
+infra/crash.log
+infra/override.tf
+infra/override.tf.json
 *_override.tf
 *_override.tf.json
 
