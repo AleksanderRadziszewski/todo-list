@@ -24,8 +24,8 @@ resource "azurerm_linux_web_app" "todo-app-as" {
   }
 }
 
-resource "azurerm_postgresql_flexible_server" "postgres" {
-  name                   = "todo-app-db"
+resource "azurerm_postgresql_flexible_server" "todo-app-server-db" {
+  name                   = "todo-app-server-db"
   resource_group_name    = azurerm_resource_group.rg-todo-app-dev.name
   location               = azurerm_resource_group.rg-todo-app-dev.location
   version                = "15"
@@ -38,20 +38,18 @@ resource "azurerm_postgresql_flexible_server" "postgres" {
 
   backup_retention_days = 7
   geo_redundant_backup_enabled = false
-
-  zone = "1"
 }
 
 resource "azurerm_postgresql_flexible_server_database" "todo-app-db" {
   name      = "todo-app-db"
-  server_id = azurerm_postgresql_flexible_server.postgres.id
+  server_id = azurerm_postgresql_flexible_server.todo-app-server-db.id
   collation = "en_US.utf8"
   charset   = "UTF8"
 }
 
 resource "azurerm_postgresql_flexible_server_firewall_rule" "allow_azure" {
   name             = "allow-azure-services"
-  server_id        = azurerm_postgresql_flexible_server.postgres.id
+  server_id        = azurerm_postgresql_flexible_server.todo-app-server-db.id
   start_ip_address = "0.0.0.0"
   end_ip_address   = "0.0.0.0"
 }
