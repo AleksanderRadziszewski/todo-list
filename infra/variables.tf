@@ -12,3 +12,9 @@ variable "administrator_password" {
     description = "administration password"
     type = string
 }
+
+variable "db_password" {
+    description = "password to postgres db"
+    type = string
+    sensitive = true
+}

@@ -24,32 +24,33 @@ resource "azurerm_linux_web_app" "todo-app-as" {
   }
 }
 
-resource "azurerm_postgresql_flexible_server" "todo-app-server-db" {
-  name                   = "todo-app-server-db"
-  resource_group_name    = azurerm_resource_group.rg-todo-app-dev.name
-  location               = azurerm_resource_group.rg-todo-app-dev.location
-  version                = "15"
-
-  administrator_login    = var.administrator_login
-  administrator_password = var.administrator_password
-
-  sku_name   = "B_Standard_B1ms"
-  storage_mb = 32768
-
-  backup_retention_days = 7
-  geo_redundant_backup_enabled = false
+resource "azurerm_key_vault" "todo-app-kv" {
+  name                = "todo-app-kv"
+  location            = azurerm_resource_group.rg-todo-app-dev.location
+  resource_group_name = azurerm_resource_group.rg-todo-app-dev.name
+  tenant_id           = data.azurerm_client_config.current.tenant_id
+  sku_name            = "standard"
 }
 
-resource "azurerm_postgresql_flexible_server_database" "todo-app-db" {
-  name      = "todo-app-db"
-  server_id = azurerm_postgresql_flexible_server.todo-app-server-db.id
-  collation = "en_US.utf8"
-  charset   = "UTF8"
+resource "azurerm_key_vault_secret" "db_password" {
+  name         = "postgres-password"
+  value        = var.db_password
+  key_vault_id = azurerm_key_vault.todo-app-kv.id
 }
 
-resource "azurerm_postgresql_flexible_server_firewall_rule" "allow_azure" {
-  name             = "allow-azure-services"
-  server_id        = azurerm_postgresql_flexible_server.todo-app-server-db.id
-  start_ip_address = "0.0.0.0"
-  end_ip_address   = "0.0.0.0"
+resource "azurerm_key_vault_access_policy" "app_policy" {
+  key_vault_id = azurerm_key_vault.todo-app-kv.id
+  tenant_id    = azurerm_linux_web_app.todo-app-as.identity[0].tenant_id
+  object_id    = azurerm_linux_web_app.todo-app-as.identity[0].principal_id
+
+  secret_permissions = [
+    "Get",
+    "List",
+    "Set",
+    "Delete",
+    "Backup",
+    "Restore",
+    "Recover",
+    "Purge"
+  ]
 }
