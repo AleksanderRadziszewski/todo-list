@@ -9,10 +9,12 @@ resource "azurerm_postgresql_flexible_server" "todo-app-server-db" {
 
   sku_name   = "B_Standard_B1ms"
   storage_mb = 32768
+  
   authentication {
     password_auth_enabled = true
   }
 }
+
 resource "azurerm_postgresql_flexible_server_database" "todo-app-db" {
   name      = "todo-app-db"
   server_id = azurerm_postgresql_flexible_server.todo-app-server-db.id
