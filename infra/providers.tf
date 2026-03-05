@@ -13,7 +13,7 @@ provider "azurerm" {
   subscription_id = var.subscription_id
 }
 
-resource "azurerm_resource_group" "rg-todo-app-dev" {
+resource "azurerm_resource_group" "rg_todo_app_dev" {
     name = "rg-todo-app-dev"
     location = "West Europe"
 }
