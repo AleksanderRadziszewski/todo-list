@@ -20,6 +20,9 @@ resource "azurerm_postgresql_flexible_server_database" "todo_app_db" {
   server_id = azurerm_postgresql_flexible_server.todo_app_server_db.id
   collation = "en_US.utf8"
   charset   = "UTF8"
+  depends_on = [
+  azurerm_postgresql_flexible_server.todo_app_server_db
+  ]
 }
 
 resource "azurerm_postgresql_flexible_server_firewall_rule" "allow_azure" {

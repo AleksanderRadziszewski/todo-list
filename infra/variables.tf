@@ -11,10 +11,21 @@ variable "administrator_login" {
 variable "administrator_password" {
     description = "administration password"
     type = string
+    sensitive = true
 }
 
 variable "db_password" {
     description = "password to postgres db"
     type = string
     sensitive = true
+}
+
+variable "client_id" {
+    description = "application id"
+    type = string
+}
+
+variable "principal_id" {
+    description = "service principal id"
+    type = string
 }
