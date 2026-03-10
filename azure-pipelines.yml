@@ -1,7 +1,7 @@
 trigger:
-- none
+  - none
 variables:
-- group: 'todo-variables-kv'
+  - group: "todo-variables-kv"
 
 stages:
   - stage: Build
@@ -11,17 +11,17 @@ stages:
         displayName: Build job
 
         steps:
-        - script: |
-            sudo apt update
-            sudo apt upgrade -y
-            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-            sudo apt update
-            sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
-            sudo systemctl status docker
-          displayName: Install docker
+          - script: |
+              sudo apt update
+              sudo apt upgrade -y
+              curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+              echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+              sudo apt update
+              sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+              sudo systemctl status docker
+            displayName: Install docker
 
-        - script: |
+          - script: |
               sudo docker build -f backend/Dockerfile -t backend:$(Build.SourceVersion) backend/
               sudo docker images
               sudo docker images backend:latest --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.CreatedAt}}"
@@ -29,17 +29,44 @@ stages:
               sudo docker image tag backend:$(Build.SourceVersion) $(DOCKERHUB-USER)/todo-app-backend:latest
               sudo docker image tag backend:$(Build.SourceVersion) $(DOCKERHUB-USER)/todo-app-backend:$(Build.SourceVersion)
               sudo docker push --all-tags $(DOCKERHUB-USER)/todo-app-backend
-          displayName: Build and push backend image
+            displayName: Build and push backend image
+
+          - script: |
+              wget https://releases.hashicorp.com/terraform/1.14.4/terraform_1.14.4_linux_amd64.zip
+              unzip terraform_1.14.4_linux_amd64.zip
+              sudo mv terraform /usr/local/bin/
+            displayName: Install Terraform 1.14.4
+
+          - script: terraform version
+            displayName: Check version
+
+          - script: |
+              sudo terraform plan  -var-file="dev.tfvars"
+              sudo terraform apply -auto-approve  -var-file="dev.tfvars"
+            displayName: Build Infra
+
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'basic-register'
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                token=$(terraform output -raw deployment_token)
+
+                az keyvault secret set \
+                  --vault-name my-todo-app-kv \
+                  --name AZURE-STATIC-WEB-APPS-API-TOKEN \
+                  --value "$token"
 
   - stage: Release
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: "ubuntu-latest"
     jobs:
       - job: Release
         steps:
-        - task: AzureStaticWebApp@0
-          inputs:
-              app_location: '/frontend'
-              output_location: '/dist' 
+          - task: AzureStaticWebApp@0
+            inputs:
+              app_location: "/frontend"
+              output_location: "/dist"
               azure_static_web_apps_api_token: $(AZURE-STATIC-WEB-APPS-API-TOKEN)
-          displayName: Deploy Azure Static Web App
+            displayName: Deploy Azure Static Web App
