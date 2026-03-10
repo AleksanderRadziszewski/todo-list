@@ -47,7 +47,7 @@ stages:
 
           - task: AzureCLI@2
             inputs:
-              azureSubscription: 'basic-register'
+              azureSubscription: 'basic-register (31e42eba-dfb6-47c1-b408-734f6602ed82)'
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
