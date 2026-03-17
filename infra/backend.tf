@@ -39,10 +39,6 @@ resource "azurerm_key_vault_secret" "db_password" {
   key_vault_id = azurerm_key_vault.my_todo_app_kv.id
 }
 
-resource "azuread_service_principal" "todo_app_sp" {
-  client_id = var.client_id
-}
-
 resource "azurerm_role_assignment" "todo_app_kv_secrets_rbac" {
   scope                = data.azurerm_key_vault.todo_kv.id
   role_definition_name = "Key Vault Administrator"
