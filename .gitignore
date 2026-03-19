@@ -34,7 +34,7 @@ infra/override.tf.json
 *_override.tf.json
 
 # Директории редакторов и инструментов
-#.idea/
-#.vscode/
-#*.swp
-#*.swo
+.idea/
+.vscode/
+*.swp
+*.swo

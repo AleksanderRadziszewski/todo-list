@@ -24,6 +24,11 @@ resource "azurerm_linux_web_app" "todo_app_as" {
   }
 }
 
+resource "random_password" "db_password" {
+  length  = 20
+  special = true
+}
+
 resource "azurerm_key_vault" "my_todo_app_kv" {
   enable_rbac_authorization = true
   name                      = "my-todo-app-kv"
@@ -33,19 +38,10 @@ resource "azurerm_key_vault" "my_todo_app_kv" {
   sku_name                  = "standard"
 }
 
-resource "azurerm_key_vault_secret" "db_password" {
-  name         = "postgres-password"
-  value        = var.db_password
-  key_vault_id = azurerm_key_vault.my_todo_app_kv.id
-}
-
 resource "azurerm_role_assignment" "todo_app_kv_secrets_rbac" {
   scope                = data.azurerm_key_vault.todo_kv.id
   role_definition_name = "Key Vault Administrator"
   principal_id         = var.principal_id
   principal_type       = "ServicePrincipal"
 
-  depends_on = [
-  azuread_service_principal.todo_app_sp
-]
 }

@@ -14,6 +14,6 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg_todo_app_dev" {
-    name = "rg-todo-app-dev"
-    location = "West Europe"
+  name     = "rg-todo-app-dev"
+  location = "West Europe"
 }

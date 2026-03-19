@@ -5,7 +5,7 @@ resource "azurerm_postgresql_flexible_server" "todo_app_server_db" {
   version                = "15"
   zone                   = "3"
   administrator_login    = var.administrator_login
-  administrator_password = var.db_password
+  administrator_password = random_password.db_password.result
 
   sku_name   = "B_Standard_B1ms"
   storage_mb = 32768
@@ -21,7 +21,7 @@ resource "azurerm_postgresql_flexible_server_database" "todo_app_db" {
   collation = "en_US.utf8"
   charset   = "UTF8"
   depends_on = [
-  azurerm_postgresql_flexible_server.todo_app_server_db
+    azurerm_postgresql_flexible_server.todo_app_server_db
   ]
 }
 
