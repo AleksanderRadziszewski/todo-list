@@ -41,7 +41,7 @@ resource "azurerm_key_vault" "my_todo_app_kv" {
 resource "azurerm_role_assignment" "todo_app_kv_secrets_rbac" {
   scope                = data.azurerm_key_vault.my_todo_app_kv.id
   role_definition_name = "Key Vault Administrator"
-  principal_id         = var.principal_id
+  principal_id         = data.azuread_service_principal.ado.object_id
   principal_type       = "ServicePrincipal"
 
 }

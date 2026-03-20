@@ -12,8 +12,3 @@ variable "client_id" {
   description = "application id"
   type        = string
 }
-
-variable "principal_id" {
-  description = "service principal id"
-  type        = string
-}
