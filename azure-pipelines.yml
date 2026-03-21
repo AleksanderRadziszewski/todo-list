@@ -46,12 +46,12 @@ stages:
             displayName: Build Infra
 
           - script: |
-              AZURE-STATIC-WEB-APPS-API-TOKEN=$(az staticwebapp secrets list \
+              TOKEN=$(az staticwebapp secrets list \
                 --name $(APP_NAME) \
                 --resource-group $(RG) \
                 --query "properties.apiKey" -o tsv)
 
-              echo "##vso[task.setvariable variable=SWA_API_TOKEN;issecret=true]$AZURE-STATIC-WEB-APPS-API-TOKEN"
+              echo "##vso[task.setvariable variable=AZURE-STATIC-WEB-APPS-API-TOKEN;issecret=true]$TOKEN"
             displayName: Get SWA token
 
   - stage: Release
