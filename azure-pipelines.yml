@@ -45,24 +45,20 @@ stages:
               sudo terraform apply -auto-approve  -var-file="dev.tfvars"
             displayName: Build Infra
 
-          - script: |
-              TOKEN=$(az staticwebapp secrets list \
-                --name $(APP_NAME) \
-                --resource-group $(RG) \
-                --query "properties.apiKey" -o tsv)
-
-              echo "##vso[task.setvariable variable=AZURE-STATIC-WEB-APPS-API-TOKEN;issecret=true]$TOKEN"
-            displayName: Get SWA token
-
   - stage: Release
     pool:
       vmImage: "ubuntu-latest"
     jobs:
       - job: Release
         steps:
-          - task: AzureStaticWebApp@0
+          - task: AzureKeyVault@2
             inputs:
-              app_location: "/frontend"
-              output_location: "/dist"
-              azure_static_web_apps_api_token: $(AZURE-STATIC-WEB-APPS-API-TOKEN)
+              azureSubscription: "my-service-connection"
+              KeyVaultName: "my-keyvault-123"
+              SecretsFilter: "swa-deployment-token"
+              RunAsPreJob: true
+
+          - script: |
+              echo "Token is available"
+              echo $(swa-deployment-token)
             displayName: Deploy Azure Static Web App
