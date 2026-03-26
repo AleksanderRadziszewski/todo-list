@@ -54,10 +54,10 @@ stages:
             inputs:
               azureSubscription: "todo-app-service-connection"
               KeyVaultName: "my-todo-app-kv"
-              SecretsFilter: "swa-deployment-token"
+              SecretsFilter: "SWA-DEPLOYMENT-TOKEN"
               RunAsPreJob: true
 
           - script: |
               echo "Token is available"
-              echo $(swa-deployment-token)
+              echo $(SWA-DEPLOYMENT-TOKEN)
             displayName: Deploy Azure Static Web App
