@@ -53,8 +53,8 @@ stages:
         steps:
           - task: AzureKeyVault@2
             inputs:
-              azureSubscription: "my-service-connection"
-              KeyVaultName: "my-keyvault-123"
+              azureSubscription: "todo-app-service-connection"
+              KeyVaultName: "my-todo-app-kv"
               SecretsFilter: "swa-deployment-token"
               RunAsPreJob: true
 
