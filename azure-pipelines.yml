@@ -1,7 +1,8 @@
 trigger:
   - none
 variables:
-  - group: "todo-variables-kv"
+  - group: "todo-app-variables-kv"
+  - group: "todo-app-variables"
 
 stages:
   - stage: Build
