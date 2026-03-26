@@ -5,7 +5,8 @@ variables:
 
 stages:
   - stage: Build
-    pool: br-agent
+    pool:
+      vmImage: "ubuntu-latest"
     jobs:
       - job: Build
         displayName: Build job
@@ -46,8 +47,6 @@ stages:
             displayName: Build Infra
 
   - stage: Release
-    pool:
-      vmImage: "ubuntu-latest"
     jobs:
       - job: Release
         steps:
