@@ -14,10 +14,6 @@ stages:
 
         steps:
           - script: |
-              echo "DOCKER VERSION $(sudo docker --version)"
-            displayName: Check docker version out
-
-          - script: |
               sudo docker build -f backend/Dockerfile -t backend:$(Build.SourceVersion) backend/
               sudo docker images
               sudo docker images backend:latest --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.CreatedAt}}"
