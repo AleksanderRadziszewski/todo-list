@@ -33,8 +33,10 @@ stages:
             displayName: Check version
 
           - script: |
-              sudo terraform plan
-              sudo terraform apply -auto-approve
+             sudo terraform init
+             sudo terraform plan
+             sudo terraform apply -auto-approve
+            workingDirectory: $(System.DefaultWorkingDirectory)/infra
             env:
               TF_VAR_administrator_login: $(administrator_login)
               TF_VAR_subscription_id: $(subscription_id)
