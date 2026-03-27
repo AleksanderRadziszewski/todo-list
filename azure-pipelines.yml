@@ -33,7 +33,7 @@ stages:
             displayName: Check version
 
           - script: |
-             sudo terraform init
+             sudo terraform init -backend-config=dev.tfbackend
              sudo terraform plan
              sudo terraform apply -auto-approve
             workingDirectory: $(System.DefaultWorkingDirectory)/infra
