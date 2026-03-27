@@ -43,8 +43,11 @@ stages:
             displayName: Check version
 
           - script: |
-              sudo terraform plan  -var-file="dev.tfvars"
-              sudo terraform apply -auto-approve  -var-file="dev.tfvars"
+              sudo terraform plan
+              sudo terraform apply -auto-approve
+            env:
+              TF_VAR_administrator_login: $(administrator_login)
+              TF_VAR_subscription_id: $(subscription_id)
             displayName: Build Infra
 
   - stage: Release

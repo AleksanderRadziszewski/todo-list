@@ -7,8 +7,3 @@ variable "administrator_login" {
   description = "administration login"
   type        = string
 }
-
-variable "client_id" {
-  description = "application id"
-  type        = string
-}
