@@ -14,7 +14,7 @@ stages:
 
         steps:
           - script: |
-              sudo docker --version
+              echo "DOCKER VERSION $(sudo docker --version)"
             displayName: Check docker version out
 
           - script: |
