@@ -32,14 +32,20 @@ stages:
           - script: terraform version
             displayName: Check version
 
-          - script: |
-             sudo terraform init -reconfigure -backend-config=dev.tfbackend
-             sudo terraform plan
-             sudo terraform apply -auto-approve
-            workingDirectory: $(System.DefaultWorkingDirectory)/infra
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: "todo-app-service-connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                terraform init
+                terraform plan
+                terraform apply -auto-approve
+              workingDirectory: $(System.DefaultWorkingDirectory)/infra
             env:
-              TF_VAR_administrator_login: $(administrator_login)
-              TF_VAR_subscription_id: $(subscription_id)
+                TF_VAR_administrator_login: $(administrator_login)
+                TF_VAR_subscription_id: $(subscription_id)
+
             displayName: Build Infra
 
   - stage: Release
