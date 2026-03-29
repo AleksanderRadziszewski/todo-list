@@ -4,3 +4,7 @@ data "azurerm_key_vault" "my_todo_app_kv" {
   name                = "my-todo-app-kv"
   resource_group_name = "rg-todo-app-dev"
 }
+
+data "azuread_service_principal" "ado" {
+  display_name = "todo-app-sp-pipeline"
+}
