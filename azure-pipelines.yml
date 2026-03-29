@@ -32,6 +32,11 @@ stages:
           - script: terraform version
             displayName: Check version
 
+          - script: |
+              echo "$(administrator_login)"
+              echo "$(subscription_id)"
+            displayName: Check value of env variables
+
           - task: AzureCLI@2
             inputs:
               azureSubscription: "todo-app-service-connection"
