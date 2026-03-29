@@ -43,7 +43,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                terraform init
+                terraform init -backend-config=dev.tfbackend
                 terraform plan
                 terraform apply -auto-approve
               workingDirectory: $(System.DefaultWorkingDirectory)/infra
