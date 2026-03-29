@@ -11,7 +11,6 @@ stages:
     jobs:
       - job: Build
         displayName: Build job
-
         steps:
           - script: |
               sudo docker build -f backend/Dockerfile -t backend:$(Build.SourceVersion) backend/
@@ -27,15 +26,8 @@ stages:
               wget https://releases.hashicorp.com/terraform/1.14.4/terraform_1.14.4_linux_amd64.zip
               unzip terraform_1.14.4_linux_amd64.zip
               sudo mv terraform /usr/local/bin/
+              terraform version
             displayName: Install Terraform 1.14.4
-
-          - script: terraform version
-            displayName: Check version
-
-          - script: |
-              echo "$(administrator_login)"
-              echo "$(subscription_id)"
-            displayName: Check value of env variables
 
           - task: AzureCLI@2
             inputs:
@@ -50,7 +42,6 @@ stages:
             env:
                 TF_VAR_administrator_login: $(administrator_login)
                 TF_VAR_subscription_id: $(subscription_id)
-
             displayName: Build Infra
 
   - stage: Release
@@ -63,8 +54,4 @@ stages:
               KeyVaultName: "my-todo-app-kv"
               SecretsFilter: "SWA-DEPLOYMENT-TOKEN"
               RunAsPreJob: true
-
-          - script: |
-              echo "Token is available"
-              echo $(SWA-DEPLOYMENT-TOKEN)
             displayName: Deploy Azure Static Web App
