@@ -3,7 +3,7 @@ resource "azurerm_service_plan" "todo_app_service_plan_dev" {
   location            = azurerm_resource_group.rg_todo_app_dev.location
   resource_group_name = azurerm_resource_group.rg_todo_app_dev.name
   os_type             = "Linux"
-  sku_name            = "F1"
+  sku_name            = "B1"
 }
 
 resource "azurerm_linux_web_app" "todo_app_as" {
