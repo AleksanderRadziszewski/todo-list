@@ -15,7 +15,7 @@ resource "azurerm_linux_web_app" "todo_app_as" {
   site_config {
     always_on = true
     application_stack {
-      docker_image_name = "${var.dockerhub_username}/todo-app-backend:latest"
+      linux_fx_version = "DOCKER|${var.dockerhub_username}/todo-app-backend:latest"
     }
   }
   identity {
