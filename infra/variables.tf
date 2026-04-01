@@ -7,3 +7,8 @@ variable "administrator_login" {
   description = "administration login"
   type        = string
 }
+
+variable "dockerhub_username" {
+  description = "dockerhub username"
+  type        = string
+}
