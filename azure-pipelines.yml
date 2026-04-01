@@ -42,7 +42,7 @@ stages:
             env:
                 TF_VAR_administrator_login: $(administrator_login)
                 TF_VAR_subscription_id: $(subscription_id)
-                TF_VAR_dockerhub_username: $(DOCKERHUB_USER)
+                TF_VAR_dockerhub_username: $(DOCKERHUB-USER)
             displayName: Build Infra
 
   - stage: Release
