@@ -13,7 +13,6 @@ variable "dockerhub_username" {
   type        = string
 }
 
-variable "postgres_host" {}
 variable "postgres_user" {}
 variable "postgres_password" {}
 variable "postgres_db" {}
