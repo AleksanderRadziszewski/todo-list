@@ -19,6 +19,12 @@ resource "azurerm_linux_web_app" "todo_app_as" {
       docker_registry_url = "https://index.docker.io"
     }
   }
+    app_settings = {
+    POSTGRES_HOST     = azurerm_postgresql_flexible_server.todo_app_server_db.fqdn
+    POSTGRES_USER     = "${var.postgres_user}@todo-app-server-db"
+    POSTGRES_PASSWORD = var.postgres_password
+    POSTGRES_DB       = var.postgres_db
+  }
   identity {
     type = "SystemAssigned"
   }
