@@ -24,6 +24,7 @@ resource "azurerm_linux_web_app" "todo_app_as" {
     POSTGRES_USER     = "${var.postgres_user}@todo-app-server-db"
     POSTGRES_PASSWORD = var.postgres_password
     POSTGRES_DB       = var.postgres_db
+    POSTGRES_PORT     = var.postgres_port
   }
   identity {
     type = "SystemAssigned"
