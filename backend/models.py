@@ -12,9 +12,10 @@ POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "localhost")
 POSTGRES_USER: str = os.getenv("POSTGRES_USER", "user")
 POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "password")
 POSTGRES_DB: str = os.getenv("POSTGRES_DB", "database")
+POSTGRES_PORT: int = os.getenv("POSTGRES_PORT", "5432")
 
 DATABASE_URL: str = (
-    f"postgresql://{POSTGRES_USER}@todo-app-server-db:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:5432/{POSTGRES_DB}?sslmode=require"
+    f"postgresql://{POSTGRES_USER}@todo-app-server-db:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}?sslmode=require"
 )
 
 print("DB HOST:", POSTGRES_HOST)
