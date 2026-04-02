@@ -35,6 +35,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
+                terraform force-unlock 88a7885d-bbda-c362-fa87-47a12a4851b8
                 terraform init -backend-config=dev.tfbackend
                 terraform plan
                 terraform apply -auto-approve
