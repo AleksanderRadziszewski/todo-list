@@ -8,12 +8,12 @@ from sqlalchemy.orm import DeclarativeBase
 
 load_dotenv()
 
-POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "localhost")
-POSTGRES_USER: str = os.getenv("POSTGRES_USER", "user")
-POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "password")
-POSTGRES_DB: str = os.getenv("POSTGRES_DB", "database")
+POSTGRES-HOST: strq = os.getenv("POSTGRES-HOST", "localhost")
+POSTGRES-USER: str = os.getenv("POSTGRES-USER", "user")
+POSTGRES-PASSWORD: str = os.getenv("POSTGRES-PASSWORD", "password")
+POSTGRES-DB: str = os.getenv("POSTGRES-DB", "database")
 
-DATABASE_URL: str = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}"
+DATABASE_URL: str = f"postgresql://{POSTGRES-USER}:{POSTGRES-PASSWORD}@{POSTGRES-HOST}/{POSTGRES-DB}"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
