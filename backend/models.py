@@ -13,7 +13,7 @@ POSTGRES_USER: str = os.getenv("POSTGRES-USER", "user")
 POSTGRES_PASSWORD: str = os.getenv("POSTGRES-PASSWORD", "password")
 POSTGRES_DB: str = os.getenv("POSTGRES-DB", "database")
 
-DATABASE_URL: str = f"postgresql://{POSTGRES-USER}:{POSTGRES-PASSWORD}@{POSTGRES-HOST}/{POSTGRES-DB}"
+DATABASE_URL: str = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
