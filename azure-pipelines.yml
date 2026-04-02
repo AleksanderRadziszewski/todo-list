@@ -38,6 +38,11 @@ stages:
                 terraform init -backend-config=dev.tfbackend
                 terraform plan
                 terraform apply -auto-approve
+
+                POSTGRES_HOST=$(terraform output -raw postgres_host)
+                echo "Postgres host is: $POSTGRES_HOST"
+                echo "##vso[task.setvariable variable=POSTGRES_HOST]$POSTGRES_HOST"
+
               workingDirectory: $(System.DefaultWorkingDirectory)/infra
             env:
                 TF_VAR_administrator_login: $(POSTGRES_USER)
@@ -46,7 +51,6 @@ stages:
                 TF_VAR_POSTGRES_USER: $(POSTGRES_USER)
                 TF_VAR_POSTGRES_PASSWORD: $(POSTGRES_PASSWORD)
                 TF_VAR_POSTGRES_DB: $(POSTGRES_DB)
-                TF_VAR_POSTGRES_HOST: $(POSTGRES_HOST)
             displayName: Build Infra
 
   - stage: Release

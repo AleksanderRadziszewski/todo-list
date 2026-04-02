@@ -14,7 +14,7 @@ POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "password")
 POSTGRES_DB: str = os.getenv("POSTGRES_DB", "database")
 
 DATABASE_URL: str = (
-    f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}"
+    f"postgresql://{POSTGRES_USER}@todo-app-server-db:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:5432/{POSTGRES_DB}?sslmode=require"
 )
 
 print("DB HOST:", POSTGRES_HOST)
