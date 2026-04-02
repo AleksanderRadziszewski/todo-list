@@ -43,6 +43,10 @@ stages:
                 TF_VAR_administrator_login: $(POSTGRES_USER)
                 TF_VAR_subscription_id: $(subscription_id)
                 TF_VAR_dockerhub_username: $(DOCKERHUB-USER)
+                TF_VAR_POSTGRES_USER: $(POSTGRES_USER)
+                TF_VAR_POSTGRES_PASSWORD: $(POSTGRES_PASSWORD)
+                TF_VAR_POSTGRES_DB: $(POSTGRES_DB)
+                TF_VAR_POSTGRES_HOST: $(POSTGRES_HOST)
             displayName: Build Infra
 
   - stage: Release
