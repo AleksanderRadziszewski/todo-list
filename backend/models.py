@@ -18,6 +18,7 @@ DATABASE_URL: str = (
 )
 
 print("DB HOST:", POSTGRES_HOST)
+print("Postgres user:", POSTGRES_USER)
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
