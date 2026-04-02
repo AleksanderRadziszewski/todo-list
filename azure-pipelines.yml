@@ -35,8 +35,8 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                terraform import azurerm_postgresql_flexible_server.todo_app_server_db /subscriptions/31e42eba-dfb6-47c1-b408-734f6602ed82/resourceGroups/rg-todo-app-dev/providers/Microsoft.DBforPostgreSQL/flexibleServers/todo-app-server-db
                 terraform init -backend-config=dev.tfbackend
+                terraform import azurerm_postgresql_flexible_server.todo_app_server_db /subscriptions/31e42eba-dfb6-47c1-b408-734f6602ed82/resourceGroups/rg-todo-app-dev/providers/Microsoft.DBforPostgreSQL/flexibleServers/todo-app-server-db
                 terraform plan
                 terraform apply -auto-approve
               workingDirectory: $(System.DefaultWorkingDirectory)/infra
