@@ -8,7 +8,7 @@ from sqlalchemy.orm import DeclarativeBase
 
 load_dotenv()
 
-POSTGRES-HOST: strq = os.getenv("POSTGRES-HOST", "localhost")
+POSTGRES-HOST: str = os.getenv("POSTGRES-HOST", "localhost")
 POSTGRES-USER: str = os.getenv("POSTGRES-USER", "user")
 POSTGRES-PASSWORD: str = os.getenv("POSTGRES-PASSWORD", "password")
 POSTGRES-DB: str = os.getenv("POSTGRES-DB", "database")
