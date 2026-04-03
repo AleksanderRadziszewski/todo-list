@@ -13,3 +13,8 @@ data "azurerm_key_vault_secret" "app_secrets" {
   name         = "POSTGRES-PASSWORD"
   key_vault_id = azurerm_key_vault.my_todo_app_kv.id
 }
+
+data "azurerm_postgresql_flexible_server" "todo_app_server_db" {
+  name                = "todo-app-server-db"
+  resource_group_name = azurerm_resource_group.rg_todo_app_dev.name
+}
