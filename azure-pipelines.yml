@@ -36,9 +36,7 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 terraform init -backend-config=dev.tfbackend
-                terraform import azurerm_linux_web_app.todo_app_as \
-                /subscriptions/31e42eba-dfb6-47c1-b408-734f6602ed82/resourceGroups/ \
-                rg-todo-app-dev/providers/Microsoft.Web/sites/todo-app-service
+                terraform import azurerm_linux_web_app.todo_app_as /subscriptions/31e42eba-dfb6-47c1-b408-734f6602ed82/resourceGroups/rg-todo-app-dev/providers/Microsoft.Web/sites/todo-app-service
                 terraform plan
                 terraform apply -auto-approve
               workingDirectory: $(System.DefaultWorkingDirectory)/infra
