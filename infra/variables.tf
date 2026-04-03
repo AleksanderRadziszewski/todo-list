@@ -13,7 +13,20 @@ variable "dockerhub_username" {
   type        = string
 }
 
-variable "postgres_user" {}
-variable "postgres_password" {}
-variable "postgres_db" {}
-variable "postgres_port" {}
+variable "keyvault_db_secret_uri" {
+  description = "Full URI of the Key Vault db secret for Postgres password"
+  type        = string
+}
+
+variable "postgres_user" {
+  description = "todo-app database server username"
+  type        = string
+}
+variable "postgres_db" {
+    description = "todo-app database name"
+    type        = string
+}
+variable "postgres_port" {
+  description = "todo-app database server port"
+  type        = string
+}
