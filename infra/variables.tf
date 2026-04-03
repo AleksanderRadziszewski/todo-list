@@ -22,11 +22,6 @@ variable "postgres_db" {
     type        = string
 }
 
-variable "postgres_password" {
-    description = "todo-app database server password"
-    type        = string
-}
-
 variable "postgres_port" {
   description = "todo-app database server port"
   type        = string
