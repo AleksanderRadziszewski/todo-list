@@ -18,8 +18,7 @@ DATABASE_URL: str = (
     f"postgresql://{POSTGRES_USER}@todo-app-server-db:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}?sslmode=require"
 )
 
-print("DB HOST:", POSTGRES_HOST)
-print("Postgres user:", POSTGRES_USER)
+print('Database url:', DATABASE_URL)
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
