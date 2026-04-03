@@ -36,6 +36,7 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 terraform init -backend-config=dev.tfbackend
+                terraform taint azurerm_linux_web_app.todo_app_as
                 terraform plan
                 terraform apply -auto-approve
               workingDirectory: $(System.DefaultWorkingDirectory)/infra
