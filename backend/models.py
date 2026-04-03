@@ -14,11 +14,12 @@ POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "password")
 POSTGRES_DB: str = os.getenv("POSTGRES_DB", "database")
 POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", "5432")
 
-DATABASE_URL: str = (
-    f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}?sslmode=require"
+DATABASE_URL = (
+    f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@"
+    f"{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}?sslmode=require"
 )
 
-print('Database url:', DATABASE_URL)
+print("DATABASE_URL correctly loaded:", DATABASE_URL)
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

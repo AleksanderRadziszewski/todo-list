@@ -44,7 +44,7 @@ stages:
                 TF_VAR_subscription_id: $(subscription_id)
                 TF_VAR_dockerhub_username: $(DOCKERHUB-USER)
                 TF_VAR_postgres_user: $(POSTGRES_USER)
-                TF_VAR_keyvault_db_secret_uri: $(POSTGRES_PASSWORD)
+                TF_VAR_postgres_password: "@Microsoft.KeyVault(SecretUri=$(POSTGRES_PASSWORD_URI))"
                 TF_VAR_postgres_port: $(POSTGRES_PORT)
                 TF_VAR_postgres_db: $(POSTGRES_DB)
             displayName: Build Infra
