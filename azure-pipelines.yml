@@ -64,5 +64,5 @@ stages:
             inputs:
                 app_location: '/frontend'
                 output_location: '/dist'
-                azure_static_web_apps_api_token: $(AZURE-STATIC-WEB-APPS-API-TOKEN)
+                azure_static_web_apps_api_token: $(SWA-DEPLOYMENT-TOKEN)
             displayName: Deploy Azure Static Web App
