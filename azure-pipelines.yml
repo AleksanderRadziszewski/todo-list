@@ -58,4 +58,11 @@ stages:
               KeyVaultName: "my-todo-app-kv"
               SecretsFilter: "SWA-DEPLOYMENT-TOKEN"
               RunAsPreJob: true
+            displayName: Download SWA token
+
+          - task: AzureStaticWebApp@0
+            inputs:
+                app_location: '/frontend'
+                output_location: '/dist'
+                azure_static_web_apps_api_token: $(AZURE-STATIC-WEB-APPS-API-TOKEN)
             displayName: Deploy Azure Static Web App

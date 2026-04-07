@@ -4,4 +4,8 @@ resource "azurerm_static_web_app" "todo_app_frontend" {
   location            = azurerm_resource_group.rg_todo_app_dev.location
   sku_tier            = "Free"
   sku_size            = "Free"
+
+  app_settings = {
+    "API_BASE_URL" = "https://${azurerm_linux_web_app.todo_app_as.default_site_hostname}"
+  }
 }
