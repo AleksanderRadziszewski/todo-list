@@ -20,9 +20,9 @@ resource "azurerm_linux_web_app" "todo_app_as" {
     }
   }
     app_settings = {
-    POSTGRES_HOST     = data.azurerm_postgresql_flexible_server.todo_app_server_db.fqdn
+    POSTGRES_HOST     = azurerm_postgresql_flexible_server.todo_app_server_db.fqdn
     POSTGRES_USER     = var.postgres_user
-    POSTGRES_PASSWORD = data.azurerm_key_vault_secret.app_secrets.value
+    POSTGRES_PASSWORD = azurerm_key_vault_secret.app_secrets.value
     POSTGRES_DB       = var.postgres_db
     POSTGRES_PORT     = var.postgres_port
   }
@@ -46,7 +46,7 @@ resource "azurerm_key_vault" "my_todo_app_kv" {
 }
 
 resource "azurerm_role_assignment" "todo_app_kv_secrets_rbac" {
-  scope                = data.azurerm_key_vault.my_todo_app_kv.id
+  scope                = azurerm_key_vault.my_todo_app_kv.id
   role_definition_name = "Key Vault Administrator"
   principal_id         = data.azuread_service_principal.ado.object_id
   principal_type       = "ServicePrincipal"
