@@ -6,6 +6,6 @@ resource "azurerm_static_web_app" "todo_app_frontend" {
   sku_size            = "Free"
 
   app_settings = {
-    API_BASE_URL = "https://${data.azurerm_app_service.todo_app_as.default_site_hostname}"
+    API_BASE_URL = "https://${data.azurerm_linux_web_app.todo_app_as.default_hostname}"
   }
 }

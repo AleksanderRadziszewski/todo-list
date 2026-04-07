@@ -15,11 +15,11 @@ resource "azurerm_linux_web_app" "todo_app_as" {
   site_config {
     always_on = false
     application_stack {
-      docker_image_name  = "${var.dockerhub_username}/todo-app-backend:latest"
+      docker_image_name   = "${var.dockerhub_username}/todo-app-backend:latest"
       docker_registry_url = "https://index.docker.io"
     }
   }
-    app_settings = {
+  app_settings = {
     POSTGRES_HOST     = azurerm_postgresql_flexible_server.todo_app_server_db.fqdn
     POSTGRES_USER     = var.postgres_user
     POSTGRES_PASSWORD = azurerm_key_vault_secret.app_secrets.value

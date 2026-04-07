@@ -18,8 +18,8 @@ variable "postgres_user" {
   type        = string
 }
 variable "postgres_db" {
-    description = "todo-app database name"
-    type        = string
+  description = "todo-app database name"
+  type        = string
 }
 
 variable "postgres_port" {
