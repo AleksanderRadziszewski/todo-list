@@ -22,7 +22,10 @@ const App: React.FC = () => {
     const fetchTasks = async () => {
       try {
         const apiUrl = import.meta.env.VITE_API_BASE_URL;
-        const response = await fetch(apiUrl || "http://localhost:5000");
+        if (!apiUrl) {
+          throw new Error("VITE_API_BASE_URL is not defined. Check your .env file.");
+}
+        const response = await fetch(`${apiUrl}/api/tasks/`);
         const data = await response.json();
         if (data.length === 0) {
           console.log("No tasks found");
