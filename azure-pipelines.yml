@@ -35,10 +35,12 @@ stages:
             displayName: 'Install Node.js'
 
           - script: |
+              cd frontend
               npm install
             displayName: 'Install dependencies'
 
           - script: |
+              cd frontend
               echo "VITE_API_BASE_URL=$(VITE_API_BASE_URL)" > .env.production
               npm run build
             displayName: 'Build React app with environment variable'
