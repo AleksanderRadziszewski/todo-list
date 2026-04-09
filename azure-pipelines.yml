@@ -28,20 +28,20 @@ stages:
               sudo mv terraform /usr/local/bin/
               terraform version
             displayName: Install Terraform 1.14.4
-            
-            - task: NodeTool@0
-              inputs:
-                versionSpec: '18.x'
-              displayName: 'Install Node.js'
 
-            - script: |
-                npm install
-              displayName: 'Install dependencies'
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '18.x'
+            displayName: 'Install Node.js'
 
-            - script: |
-                echo "VITE_API_BASE_URL=$(VITE_API_BASE_URL)" > .env.production
-                npm run build
-              displayName: 'Build React app with environment variable'
+          - script: |
+              npm install
+            displayName: 'Install dependencies'
+
+          - script: |
+              echo "VITE_API_BASE_URL=$(VITE_API_BASE_URL)" > .env.production
+              npm run build
+            displayName: 'Build React app with environment variable'
 
           - task: AzureCLI@2
             inputs:
