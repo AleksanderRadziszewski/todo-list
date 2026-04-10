@@ -14,6 +14,13 @@ resource "azurerm_linux_web_app" "todo_app_as" {
 
   site_config {
     always_on = false
+    cors {
+      allowed_origins = [
+        azurerm_static_web_app.todo_app_frontend.default_host_name
+      ]
+
+      support_credentials = false
+    }
     application_stack {
       docker_image_name   = "${var.dockerhub_username}/todo-app-backend:latest"
       docker_registry_url = "https://index.docker.io"
