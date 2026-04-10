@@ -6,6 +6,6 @@ resource "azurerm_static_web_app" "todo_app_frontend" {
   sku_size            = "Free"
 
   app_settings = {
-    VITE_API_BASE_URL = "https://${data.azurerm_linux_web_app.todo_app_as.default_hostname}"
+    VITE_API_BASE_URL = "https://${azurerm_linux_web_app.todo_app_as.default_hostname}"
   }
 }
