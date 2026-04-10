@@ -26,3 +26,7 @@ variable "postgres_port" {
   description = "todo-app database server port"
   type        = string
 }
+
+variable "frontend_url" {
+  type = string
+} 
