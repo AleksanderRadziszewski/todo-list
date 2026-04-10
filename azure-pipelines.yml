@@ -29,7 +29,7 @@ stages:
               terraform version
             displayName: Install Terraform 1.14.4
 
-          - task: NodeTool@0
+          - task: NodeTool@1
             inputs:
               versionSpec: '18.x'
             displayName: 'Install Node.js'
