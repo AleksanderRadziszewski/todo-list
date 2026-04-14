@@ -71,7 +71,7 @@ stages:
                     scriptLocation: inlineScript
                     inlineScript: |
                       echo ${{ parameters.environment }}.tfbackend
-                      echo ls -al $(System.DefaultWorkingDirectory)/infra/environments
+                      ls -al $(System.DefaultWorkingDirectory)/infra/environments
                       terraform init -backend-config=${{ parameters.environment }}.tfbackend
                       terraform plan
                       terraform apply -auto-approve
