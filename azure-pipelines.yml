@@ -57,11 +57,13 @@ stages:
           runOnce:
             deploy:
               steps:
-                - task: TerraformToolInstaller@1
-                  displayName: "Install Terraform"
-                  inputs:
-                    terraformVersion: "1.14.4"
-
+                - script: |
+                    TERRAFORM_VERSION="1.14.4"
+                    curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+                    unzip terraform.zip
+                    sudo mv terraform /usr/local/bin/terraform
+                    terraform -version
+                  displayName: Install Terraform
                 - task: AzureCLI@2
                   inputs:
                     azureSubscription: "todo-app-service-connection"
