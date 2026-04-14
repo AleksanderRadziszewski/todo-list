@@ -1,18 +1,38 @@
 # 📝✅ "To-Do App" by Python, Fast API Postgre, React
 [![Python](https://img.shields.io/badge/python-3.12.3-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/fastapi-0.111.0-green.svg)](https://fastapi.tiangolo.com/)
-[![SQLAlchemy](https://img.shields.io/badge/sqlalchemy-2.0.30-c02726.svg)]([https://fastapi.tiangolo.com/](https://www.sqlalchemy.org/))<br>
+[![SQLAlchemy](https://img.shields.io/badge/sqlalchemy-2.0.30-c02726.svg)]([https://fastapi.tiangolo.com/](https://www.sqlalchemy.org/))
 [![Vite](https://img.shields.io/badge/vite-5.2.11-A750FE.svg)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/react-18.2.66-61DAFB.svg)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/typescript-7.2.0-blue.svg)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/typescript-7.2.0-blue.svg)](https://www.typescriptlang.org/) <br>
 [![FramerMotion](https://img.shields.io/badge/framer‐motion-11.2.10-fc0091.svg)]([https://vitejs.dev/](https://www.framer.com/motion/))
+[![Azure](https://img.shields.io/badge/Azure-Cloud-blue?logo=microsoftazure)](https://azure.microsoft.com/)
+[![Terraform](https://img.shields.io/badge/Terraform-1.14.4-623CE4?logo=terraform)](https://www.terraform.io/)
+[![Docker](https://img.shields.io/badge/Docker-Containerization-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-18.x-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Azure DevOps](https://img.shields.io/badge/Azure_DevOps-CI/CD-0078D7?logo=azuredevops&logoColor=white)](https://azure.microsoft.com/en-us/products/devops/)
 
+I wrote a pipeline for a simple, three-tier application. I used Dockerhub as a free registry and an IaC tool (Terraform) to build the infrastructure.
 
-This "To-Do" application was developed as an educational project to demonstrate the interaction between a Python/FastAPI backend and a React/TypeScript frontend.
-The project provide a simple, functional demo of a to-do application that allows users to add, delete, and mark tasks as complete.
-The frontend design is intentionally kept minimal with basic CSS styles to ensure clarity and ease of understanding for educational purposes.
+Azure services I used:
+
+**App Service** -> backend \
+**Static Web App** -> frontend \
+**Azure Database for PostgreSQL flexible servers** \
+**Key Vault** -> for storing secrets \
+**Azure DevOps** -> pipeline
+
+The application is hosted at:
+
+a) localhost:5173
 
 <img src="screenshots/todo-app-v0.1.1.gif" width="100%">
+
+b) https://icy-sand-0a2899f03.1.azurestaticapps.net (run the pipeline previously)
+
+
+https://github.com/user-attachments/assets/438a9ccd-4fcc-49e0-aa9e-e6333c98b309
+
 
 
 ## ⚙️ Technology Stack
