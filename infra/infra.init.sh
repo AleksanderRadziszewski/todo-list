@@ -2,7 +2,7 @@ az group create --name rg-todo-app --location westeurope
 
 az storage account create \
   --resource-group rg-todo-app \
-  --name tfstatetodoapp \
+  --name tfstate-todo-app \
   --sku Standard_LRS \
   --encryption-services blob
 
