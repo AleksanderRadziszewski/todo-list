@@ -79,11 +79,11 @@ stages:
                         terraform init -reconfigure -backend-config=${{ parameters.environment }}.tfbackend
 
                         echo "Planning"
-                        terraform plan
+                        terraform plan -var-file=environments/${{ parameters.environment }}.tfvars
 
                         echo "Applying"
-                        terraform apply -auto-approve
-                    workingDirectory: $(System.DefaultWorkingDirectory)/infra/environments
+                        terraform apply -var-file=environments/${{ parameters.environment }}.tfvars -auto-approve
+                    workingDirectory: $(System.DefaultWorkingDirectory)/infra
                   env:
                     TF_VAR_administrator_login: $(POSTGRES_USER)
                     TF_VAR_subscription_id: $(subscription_id)
