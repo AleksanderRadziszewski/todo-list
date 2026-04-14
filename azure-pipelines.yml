@@ -70,11 +70,19 @@ stages:
                     scriptType: bash
                     scriptLocation: inlineScript
                     inlineScript: |
-                      echo ${{ parameters.environment }}.tfbackend
-                      ls -al $(System.DefaultWorkingDirectory)/infra/environments
-                      terraform init -backend-config=${{ parameters.environment }}.tfbackend
-                      terraform plan
-                      terraform apply -auto-approve
+                        set -e
+
+                        echo "Listing infra directory"
+                        ls -la
+
+                        echo "Initializing Terraform"
+                        terraform init -reconfigure -backend-config=${{ parameters.environment }}.tfbackend
+
+                        echo "Planning"
+                        terraform plan
+
+                        echo "Applying"
+                        terraform apply -auto-approve
                     workingDirectory: $(System.DefaultWorkingDirectory)/infra/environments
                   env:
                     TF_VAR_administrator_login: $(POSTGRES_USER)
