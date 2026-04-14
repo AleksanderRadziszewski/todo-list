@@ -1,8 +1,18 @@
 trigger:
   - none
+
+parameters:
+  - name: environment
+    displayName: Environment
+    type: string
+    default: dev
+    values:
+      - dev
+      - prod
+
 variables:
-  - group: "todo-app-variables-kv"
-  - group: "todo-app-variables"
+  - group: "todo-app-${{ parameters.environment }}-variables-kv"
+  - group: "todo-app-${{ parameters.environment }}-variables"
 
 stages:
   - stage: Build
@@ -51,7 +61,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                terraform init -backend-config=dev.tfbackend
+                terraform init -backend-config=${{ parameters.environment }}.tfbackend
                 terraform plan
                 terraform apply -auto-approve
               workingDirectory: $(System.DefaultWorkingDirectory)/infra

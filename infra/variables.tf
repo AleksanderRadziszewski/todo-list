@@ -29,4 +29,8 @@ variable "postgres_port" {
 
 variable "frontend_url" {
   type = string
-} 
+}
+
+variable "environment" {
+  type = string
+}
