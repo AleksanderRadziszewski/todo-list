@@ -73,7 +73,7 @@ stages:
                       terraform init -backend-config=${{ parameters.environment }}.tfbackend
                       terraform plan
                       terraform apply -auto-approve
-                    workingDirectory: $(System.DefaultWorkingDirectory)/infra
+                    workingDirectory: $(System.DefaultWorkingDirectory)/infra/environments/
                   env:
                     TF_VAR_administrator_login: $(POSTGRES_USER)
                     TF_VAR_subscription_id: $(subscription_id)
