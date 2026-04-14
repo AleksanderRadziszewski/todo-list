@@ -85,6 +85,7 @@ stages:
                         terraform apply -auto-approve
                     workingDirectory: $(System.DefaultWorkingDirectory)/infra
                   env:
+                    TF_VAR_environment: ${{ parameters.environment }}
                     TF_VAR_administrator_login: $(POSTGRES_USER)
                     TF_VAR_subscription_id: $(subscription_id)
                     TF_VAR_dockerhub_username: $(DOCKERHUB-USER)
