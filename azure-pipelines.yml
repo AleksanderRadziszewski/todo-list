@@ -64,6 +64,7 @@ stages:
                     sudo mv terraform /usr/local/bin/terraform
                     terraform -version
                   displayName: Install Terraform
+                - checkout: self 
                 - task: AzureCLI@2
                   inputs:
                     azureSubscription: "todo-app-service-connection"
