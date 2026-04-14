@@ -75,11 +75,8 @@ stages:
                         echo "Cleaning Terraform cache"
                         rm -rf .terraform .terraform.lock.hcl
 
-                        echo "Infra structure:"
-                        ls -R .
-
                         echo "Initializing backend"
-                        terraform init -input=false -reconfigure -backend-config=environments/${{ parameters.environment }}.tfbackend
+                        terraform init -backend-config=environments/${{ parameters.environment }}.tfbackend
 
                         echo "Planning"
                         terraform plan
