@@ -55,42 +55,47 @@ stages:
               npm run build
             displayName: 'Build React app with environment variable'
 
-          - task: AzureCLI@2
-            inputs:
-              azureSubscription: "todo-app-service-connection"
-              scriptType: bash
-              scriptLocation: inlineScript
-              inlineScript: |
-                terraform init -backend-config=${{ parameters.environment }}.tfbackend
-                terraform plan
-                terraform apply -auto-approve
-              workingDirectory: $(System.DefaultWorkingDirectory)/infra
-            env:
-                TF_VAR_administrator_login: $(POSTGRES_USER)
-                TF_VAR_subscription_id: $(subscription_id)
-                TF_VAR_dockerhub_username: $(DOCKERHUB-USER)
-                TF_VAR_postgres_user: $(POSTGRES_USER)
-                TF_VAR_postgres_port: $(POSTGRES_PORT)
-                TF_VAR_postgres_db: $(POSTGRES_DB)
-                TF_VAR_frontend_url: $(FRONTEND_URL)
-            displayName: Build Infra
-
-  - stage: Release
+  - stage: Deploy_Dev
+    displayName: Deploy to Dev
+    condition: eq('${{ parameters.environment }}', 'dev')
     jobs:
-      - job: Release
-        steps:
+      - deployment: Deploy_Dev
+        environment: 'dev'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: AzureCLI@2
+                  inputs:
+                    azureSubscription: "todo-app-service-connection"
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      terraform init -backend-config=${{ parameters.environment }}.tfbackend
+                      terraform plan
+                      terraform apply -auto-approve
+                    workingDirectory: $(System.DefaultWorkingDirectory)/infra
+                  env:
+                      TF_VAR_administrator_login: $(POSTGRES_USER)
+                      TF_VAR_subscription_id: $(subscription_id)
+                      TF_VAR_dockerhub_username: $(DOCKERHUB-USER)
+                      TF_VAR_postgres_user: $(POSTGRES_USER)
+                      TF_VAR_postgres_port: $(POSTGRES_PORT)
+                      TF_VAR_postgres_db: $(POSTGRES_DB)
+                      TF_VAR_frontend_url: $(FRONTEND_URL)
+                  displayName: Build Infra
 
-          - task: AzureKeyVault@2
-            inputs:
-              azureSubscription: "todo-app-service-connection"
-              KeyVaultName: "my-todo-app-kv"
-              SecretsFilter: "SWA-DEPLOYMENT-TOKEN"
-              RunAsPreJob: true
-            displayName: Download SWA token
+                - task: AzureKeyVault@2
+                  inputs:
+                    azureSubscription: "todo-app-service-connection"
+                    KeyVaultName: "my-todo-app-kv"
+                    SecretsFilter: "SWA-DEPLOYMENT-TOKEN"
+                    RunAsPreJob: true
+                  displayName: Download SWA token (Dev)
 
-          - task: AzureStaticWebApp@0
-            inputs:
-                app_location: '/frontend'
-                output_location: '/dist'
-                azure_static_web_apps_api_token: $(SWA-DEPLOYMENT-TOKEN)
-            displayName: Deploy Azure Static Web App
+                - task: AzureStaticWebApp@0
+                  inputs:
+                      app_location: '/frontend'
+                      output_location: '/dist'
+                      azure_static_web_apps_api_token: $(SWA-DEPLOYMENT-TOKEN)
+                  displayName: Deploy Azure Static Web App (Dev)
