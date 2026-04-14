@@ -55,11 +55,11 @@ stages:
               npm run build
             displayName: 'Build React app with environment variable'
 
-  - stage: Deploy_Dev
-    displayName: Deploy to Dev
+  - stage: Deploy
+    displayName: Deploy
     jobs:
-      - deployment: Deploy_Dev
-        environment: 'dev'
+      - deployment: Deploy
+        environment: ${{parameters.environment}}
         strategy:
           runOnce:
             deploy:
