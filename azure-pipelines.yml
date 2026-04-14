@@ -32,28 +32,21 @@ stages:
               sudo docker push --all-tags $(DOCKERHUB-USER)/todo-app-backend
             displayName: Build and push backend image
 
-          - script: |
-              wget https://releases.hashicorp.com/terraform/1.14.4/terraform_1.14.4_linux_amd64.zip
-              unzip terraform_1.14.4_linux_amd64.zip
-              sudo mv terraform /usr/local/bin/
-              terraform version
-            displayName: Install Terraform 1.14.4
-
           - task: UseNode@1
             inputs:
-              version: '18.x'
-            displayName: 'Install Node.js'
+              version: "18.x"
+            displayName: "Install Node.js"
 
           - script: |
               cd frontend
               npm install
-            displayName: 'Install dependencies'
+            displayName: "Install dependencies"
 
           - script: |
               cd frontend
               echo "VITE_API_BASE_URL=$(VITE_API_BASE_URL)" > .env.production
               npm run build
-            displayName: 'Build React app with environment variable'
+            displayName: "Build React app with environment variable"
 
   - stage: Deploy
     displayName: Deploy
@@ -64,6 +57,11 @@ stages:
           runOnce:
             deploy:
               steps:
+                - task: TerraformInstaller@1
+                  displayName: "Install Terraform"
+                  inputs:
+                    terraformVersion: "1.14.4"
+
                 - task: AzureCLI@2
                   inputs:
                     azureSubscription: "todo-app-service-connection"
@@ -75,13 +73,13 @@ stages:
                       terraform apply -auto-approve
                     workingDirectory: $(System.DefaultWorkingDirectory)/infra
                   env:
-                      TF_VAR_administrator_login: $(POSTGRES_USER)
-                      TF_VAR_subscription_id: $(subscription_id)
-                      TF_VAR_dockerhub_username: $(DOCKERHUB-USER)
-                      TF_VAR_postgres_user: $(POSTGRES_USER)
-                      TF_VAR_postgres_port: $(POSTGRES_PORT)
-                      TF_VAR_postgres_db: $(POSTGRES_DB)
-                      TF_VAR_frontend_url: $(FRONTEND_URL)
+                    TF_VAR_administrator_login: $(POSTGRES_USER)
+                    TF_VAR_subscription_id: $(subscription_id)
+                    TF_VAR_dockerhub_username: $(DOCKERHUB-USER)
+                    TF_VAR_postgres_user: $(POSTGRES_USER)
+                    TF_VAR_postgres_port: $(POSTGRES_PORT)
+                    TF_VAR_postgres_db: $(POSTGRES_DB)
+                    TF_VAR_frontend_url: $(FRONTEND_URL)
                   displayName: Build Infra
 
                 - task: AzureKeyVault@2
@@ -94,7 +92,7 @@ stages:
 
                 - task: AzureStaticWebApp@0
                   inputs:
-                      app_location: '/frontend'
-                      output_location: '/dist'
-                      azure_static_web_apps_api_token: $(SWA-DEPLOYMENT-TOKEN)
+                    app_location: "/frontend"
+                    output_location: "/dist"
+                    azure_static_web_apps_api_token: $(SWA-DEPLOYMENT-TOKEN)
                   displayName: Deploy Azure Static Web App (${{ parameters.environment }})
