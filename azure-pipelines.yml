@@ -57,7 +57,6 @@ stages:
 
   - stage: Deploy_Dev
     displayName: Deploy to Dev
-    condition: eq('${{ parameters.environment }}', 'dev')
     jobs:
       - deployment: Deploy_Dev
         environment: 'dev'
@@ -91,11 +90,11 @@ stages:
                     KeyVaultName: "my-todo-app-kv"
                     SecretsFilter: "SWA-DEPLOYMENT-TOKEN"
                     RunAsPreJob: true
-                  displayName: Download SWA token (Dev)
+                  displayName: Download SWA token (${{ parameters.environment }})
 
                 - task: AzureStaticWebApp@0
                   inputs:
                       app_location: '/frontend'
                       output_location: '/dist'
                       azure_static_web_apps_api_token: $(SWA-DEPLOYMENT-TOKEN)
-                  displayName: Deploy Azure Static Web App (Dev)
+                  displayName: Deploy Azure Static Web App (${{ parameters.environment }})
