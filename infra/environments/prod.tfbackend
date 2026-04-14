@@ -1,4 +1,4 @@
 resource_group_name  = "rg-todo-app"
-storage_account_name = "tfstate-todo-app"
+storage_account_name = "tfstatetodoapp"
 container_name       = "todo-app-tfstate"
 key                  = "prod.tfstate"
