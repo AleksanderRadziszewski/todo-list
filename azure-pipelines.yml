@@ -72,9 +72,6 @@ stages:
                     scriptLocation: inlineScript
                     inlineScript: |
 
-                        echo "Cleaning Terraform cache"
-                        rm -rf .terraform .terraform.lock.hcl
-
                         echo "Initializing backend"
                         terraform init -backend-config=environments/${{ parameters.environment }}.tfbackend
 
