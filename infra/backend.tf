@@ -1,4 +1,4 @@
-resource "azurerm_service_plan" "todo_app_service_plan_dev" {
+resource "azurerm_service_plan" "todo_app_service_plan" {
   name                = "todo-app-service-plan"
   location            = azurerm_resource_group.rg_todo_app_dev.location
   resource_group_name = azurerm_resource_group.rg_todo_app_dev.name
@@ -10,7 +10,7 @@ resource "azurerm_linux_web_app" "todo_app_as" {
   name                = "todo-app-service"
   location            = azurerm_resource_group.rg_todo_app_dev.location
   resource_group_name = azurerm_resource_group.rg_todo_app_dev.name
-  service_plan_id     = azurerm_service_plan.todo_app_service_plan_dev.id
+  service_plan_id     = azurerm_service_plan.todo_app_service_plan.id
 
   site_config {
     always_on = false
