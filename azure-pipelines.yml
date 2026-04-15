@@ -75,9 +75,6 @@ stages:
                         echo "Initializing backend"
                         terraform init -backend-config=environments/${{ parameters.environment }}.tfbackend
 
-                        terraform import azurerm_resource_group.rg_todo_app_dev \
-                        /subscriptions/31e42eba-dfb6-47c1-b408-734f6602ed82/resourceGroups/rg-todo-app-dev
-
                         echo "Planning"
                         terraform plan
 
