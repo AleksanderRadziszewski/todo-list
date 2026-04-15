@@ -97,7 +97,7 @@ stages:
                     azureSubscription: "todo-app-service-connection"
                     KeyVaultName: "my-todo-app-kv"
                     SecretsFilter: "SWA-DEPLOYMENT-TOKEN"
-                    RunAsPreJob: true
+                    RunAsPreJob: false
                   displayName: Download SWA token (${{ parameters.environment }})
 
                 - task: AzureStaticWebApp@0
