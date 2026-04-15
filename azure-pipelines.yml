@@ -72,14 +72,9 @@ stages:
                     scriptLocation: inlineScript
                     inlineScript: |
 
-                        echo "Initializing backend"
-                        terraform init -backend-config=environments/${{ parameters.environment }}.tfbackend
+                      terraform init -backend-config=environments/dev.tfbackend
 
-                        echo "Planning"
-                        terraform plan
-
-                        echo "Applying"
-                        terraform apply -auto-approve
+                      terraform destroy -auto-approve
                     workingDirectory: $(System.DefaultWorkingDirectory)/infra
                   env:
                     TF_VAR_environment: ${{ parameters.environment }}
