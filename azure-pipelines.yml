@@ -71,9 +71,6 @@ stages:
                     scriptType: bash
                     scriptLocation: inlineScript
                     inlineScript: |
-
-                      terraform init -backend-config=environments/dev.tfbackend
-
                       terraform destroy -auto-approve
                     workingDirectory: $(System.DefaultWorkingDirectory)/infra
                   env:
