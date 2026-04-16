@@ -57,6 +57,7 @@ stages:
           runOnce:
             deploy:
               steps:
+                - checkout: self
                 - script: |
                     TERRAFORM_VERSION="1.14.4"
                     curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
@@ -64,14 +65,12 @@ stages:
                     sudo mv terraform /usr/local/bin/terraform
                     terraform -version
                   displayName: Install Terraform
-                - checkout: self
                 - task: AzureCLI@2
                   inputs:
                     azureSubscription: "todo-app-service-connection"
                     scriptType: bash
                     scriptLocation: inlineScript
                     inlineScript: |
-
                         echo "Initializing backend"
                         terraform init -backend-config=environments/${{ parameters.environment }}.tfbackend
 
