@@ -34,3 +34,7 @@ variable "frontend_url" {
 variable "environment" {
   type = string
 }
+
+variable "location" {}
+variable "app_service_sku" {}
+variable "postgres_sku" {}

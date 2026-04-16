@@ -1,15 +1,15 @@
 resource "azurerm_service_plan" "todo_app_service_plan" {
-  name                = "todo-app-service-plan"
-  location            = azurerm_resource_group.rg_todo_app_dev.location
-  resource_group_name = azurerm_resource_group.rg_todo_app_dev.name
+  name                = "todo-app-${var.environment}-service-plan"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg_todo_app.name
   os_type             = "Linux"
-  sku_name            = "F1"
+  sku_name            = var.app_service_sku
 }
 
 resource "azurerm_linux_web_app" "todo_app_as" {
-  name                = "todo-app-service"
-  location            = azurerm_resource_group.rg_todo_app_dev.location
-  resource_group_name = azurerm_resource_group.rg_todo_app_dev.name
+  name                = "todo-app-${var.environment}-service"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg_todo_app.name
   service_plan_id     = azurerm_service_plan.todo_app_service_plan.id
 
   site_config {
@@ -41,9 +41,9 @@ resource "random_password" "db_password" {
 
 resource "azurerm_key_vault" "my_todo_app_kv" {
   enable_rbac_authorization = true
-  name                      = "my-todo-app-kv"
-  location                  = azurerm_resource_group.rg_todo_app_dev.location
-  resource_group_name       = azurerm_resource_group.rg_todo_app_dev.name
+  name                      = "my-todo-app-${var.environment}-kv"
+  location                  = var.location
+  resource_group_name       = azurerm_resource_group.rg_todo_app.name
   tenant_id                 = data.azurerm_client_config.current.tenant_id
   sku_name                  = "standard"
 }

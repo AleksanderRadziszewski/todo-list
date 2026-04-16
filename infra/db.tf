@@ -1,13 +1,13 @@
 resource "azurerm_postgresql_flexible_server" "todo_app_server_db" {
   name                   = "todo-app-server-db"
-  resource_group_name    = azurerm_resource_group.rg_todo_app_dev.name
-  location               = azurerm_resource_group.rg_todo_app_dev.location
+  resource_group_name    = azurerm_resource_group.rg_todo_app.name
+  location               = var.location
   version                = "15"
   zone                   = "3"
   administrator_login    = var.administrator_login
   administrator_password = random_password.db_password.result
 
-  sku_name   = "B_Standard_B1ms"
+  sku_name   = var.postgres_sku
   storage_mb = 32768
 
   authentication {
