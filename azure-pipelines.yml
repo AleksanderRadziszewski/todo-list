@@ -93,7 +93,7 @@ stages:
                 - task: AzureKeyVault@2
                   inputs:
                     azureSubscription: "todo-app-service-connection"
-                    KeyVaultName: "my-todo-app-kv"
+                    KeyVaultName: "my-todo-app-${{ parameters.environment }}-kv"
                     SecretsFilter: "SWA-DEPLOYMENT-TOKEN"
                     RunAsPreJob: false
                   displayName: Download SWA token (${{ parameters.environment }})
