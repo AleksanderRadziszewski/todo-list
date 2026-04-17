@@ -31,6 +31,15 @@ variable "environment" {
   type = string
 }
 
-variable "location" {}
-variable "app_service_sku" {}
-variable "postgres_sku" {}
+variable "location" {
+  type    = string
+  default = "West Europe"
+}
+variable "app_service_sku" {
+  type    = string
+  default = "F1"
+}
+variable "postgres_sku" {
+  type    = string
+  default = "B_Standard_B1ms"
+}
