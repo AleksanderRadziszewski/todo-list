@@ -73,6 +73,12 @@ stages:
                       echo "Initializing backend"
                       terraform init -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
 
+                      echo "Planning only SWA"
+                      terraform plan -target=azurerm_static_web_app.todo_app_frontend
+
+                      echo "Applying only SWA"
+                      terraform apply -target=azurerm_static_web_app.todo_app_frontend
+
                       echo "Planning"
                       terraform plan
 
@@ -87,6 +93,7 @@ stages:
                     TF_VAR_postgres_user: $(POSTGRES_USER)
                     TF_VAR_postgres_port: $(POSTGRES_PORT)
                     TF_VAR_postgres_db: $(POSTGRES_DB)
+                    TF_VAR_frontend_url: $(frontend_url)
                   displayName: Build Infra
 
                 - task: AzureKeyVault@2
