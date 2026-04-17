@@ -107,5 +107,6 @@ stages:
                   inputs:
                     app_location: "/frontend"
                     output_location: "/dist"
+                    azure_static_web_apps_api_token: $(SWA_DEPLOYMENT_TOKEN)   # keep this
                   env:
-                    AZURE_STATIC_WEB_APPS_API_TOKEN: $(SWA_DEPLOYMENT_TOKEN)
+                    AZURE_STATIC_WEB_APPS_API_TOKEN: $(SWA_DEPLOYMENT_TOKEN)   # AND this
