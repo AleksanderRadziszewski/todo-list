@@ -99,12 +99,13 @@ stages:
 
                     echo "Token fetched"
 
-                    echo "##vso[task.setvariable variable=SWA_DEPLOYMENT_TOKEN]$SWA_DEPLOYMENT_TOKEN"
+                    echo "##vso[task.setvariable variable=SWA_DEPLOYMENT_TOKEN;issecret=true]$SWA_DEPLOYMENT_TOKEN"
                   displayName: Get SWA Deployment Token
 
                 - task: AzureStaticWebApp@0
+                  displayName: Deploy Azure Static Web App (${{ parameters.environment }})
                   inputs:
                     app_location: "/frontend"
                     output_location: "/dist"
-                    azure_static_web_apps_api_token: $(SWA_DEPLOYMENT_TOKEN)
-                  displayName: Deploy Azure Static Web App (${{ parameters.environment }})
+                  env:
+                    AZURE_STATIC_WEB_APPS_API_TOKEN: $(SWA_DEPLOYMENT_TOKEN)
