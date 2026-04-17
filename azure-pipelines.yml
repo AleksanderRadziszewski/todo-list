@@ -74,11 +74,6 @@ stages:
                       echo "Initializing backend"
                       terraform init -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
 
-                      echo "Planning SWA i RG per env"
-                      terraform plan \
-                       -target=azurerm_resource_group.rg_todo_app \
-                       -target=azurerm_static_web_app.todo_app_frontend
-
                       echo "Applying SWA i RG per env"
                       terraform apply \
                        -target=azurerm_resource_group.rg_todo_app \
