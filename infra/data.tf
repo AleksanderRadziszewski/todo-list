@@ -4,6 +4,6 @@ data "azuread_service_principal" "ado" {
 }
 
 data "azurerm_static_web_app" "frontend" {
-  name = "deafult-url"
+  name = "todo-app-${var.environment}-frontend-static"
   resource_group_name = "rg-todo-app-${var.environment}"
 }
