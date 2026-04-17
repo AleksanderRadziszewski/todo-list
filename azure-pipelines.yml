@@ -86,6 +86,7 @@ stages:
                       terraform apply -auto-approve
                     workingDirectory: $(System.DefaultWorkingDirectory)/infra
                   env:
+                    ARM_SUBSCRIPTION_ID: $(subscription_id)
                     TF_VAR_environment: ${{ parameters.environment }}
                     TF_VAR_administrator_login: $(POSTGRES_USER)
                     TF_VAR_subscription_id: $(subscription_id)
