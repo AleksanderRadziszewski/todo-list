@@ -92,24 +92,19 @@ stages:
                   displayName: Build Infra
 
                 - script: |
-                    SWA-DEPLOYMENT-TOKEN=$(az staticwebapp secrets \
+                    SWA_DEPLOYMENT_TOKEN=$(az staticwebapp secrets list \
                       --name todo-app-${{ parameters.environment }}-frontend-static \
-                      --resource-group rg-todo-app-${{ parameters.environment }})
+                      --resource-group rg-todo-app-${{ parameters.environment }} \
+                      --query "properties.apiKey" -o tsv)
 
-                    ##vso[task.setvariable variable=SWA-DEPLOYMENT-TOKEN]$SWA-DEPLOYMENT-TOKEN
-                  displayName: Get SWA token
+                    echo "Token fetched"
 
-                - task: AzureKeyVault@2
-                  inputs:
-                    azureSubscription: "todo-app-service-connection"
-                    KeyVaultName: "my-todo-app-${{ parameters.environment }}-kv"
-                    SecretsFilter: ${SWA-DEPLOYMENT-TOKEN}
-                    RunAsPreJob: false
-                  displayName: Download SWA token (${{ parameters.environment }})
+                    echo "##vso[task.setvariable variable=SWA_DEPLOYMENT_TOKEN]$SWA_DEPLOYMENT_TOKEN"
+                  displayName: Get SWA Deployment Token
 
                 - task: AzureStaticWebApp@0
                   inputs:
                     app_location: "/frontend"
                     output_location: "/dist"
-                    azure_static_web_apps_api_token: $(SWA-DEPLOYMENT-TOKEN)
+                    azure_static_web_apps_api_token: $(SWA_DEPLOYMENT_TOKEN)
                   displayName: Deploy Azure Static Web App (${{ parameters.environment }})
