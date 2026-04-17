@@ -11,8 +11,8 @@ parameters:
       - prod
 
 variables:
+  - group: "todo-app-variables-kv"
   - group: "todo-app-${{ parameters.environment }}-variables-kv"
-  - group: "todo-app-${{ parameters.environment }}-variables"
 
 stages:
   - stage: Build
