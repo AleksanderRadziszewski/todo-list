@@ -12,7 +12,6 @@ parameters:
 
 variables:
   - group: "todo-app-variables-kv"
-  - group: "todo-app-${{ parameters.environment }}-variables-kv"
 
 stages:
   - stage: Build
