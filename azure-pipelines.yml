@@ -103,13 +103,6 @@ stages:
                         --resource-group rg-todo-app-${{ parameters.environment }} \
                         --query "properties.apiKey" -o tsv)
 
-                      if [ -z "$SWA_DEPLOYMENT_TOKEN" ]; then
-                        echo "❌ Token is EMPTY"
-                        exit 1
-                      else
-                        echo "✅ Token fetched"
-                      fi
-
                       echo "##vso[task.setvariable variable=SWA_DEPLOYMENT_TOKEN;issecret=true]$SWA_DEPLOYMENT_TOKEN"
 
                 - task: AzureStaticWebApp@0
@@ -117,6 +110,4 @@ stages:
                   inputs:
                     app_location: "/frontend"
                     output_location: "/dist"
-                    azure_static_web_apps_api_token: $(SWA_DEPLOYMENT_TOKEN)   # keep this
-                  env:
-                    AZURE_STATIC_WEB_APPS_API_TOKEN: $(SWA_DEPLOYMENT_TOKEN)   # AND this
+                    azure_static_web_apps_api_token: $(SWA_DEPLOYMENT_TOKEN)
