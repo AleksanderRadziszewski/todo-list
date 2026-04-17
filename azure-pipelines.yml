@@ -91,21 +91,26 @@ stages:
                     TF_VAR_postgres_db: $(POSTGRES_DB)
                   displayName: Build Infra
 
-                - script: |
-                    SWA_DEPLOYMENT_TOKEN=$(az staticwebapp secrets list \
-                      --name todo-app-${{ parameters.environment }}-frontend-static \
-                      --resource-group rg-todo-app-${{ parameters.environment }} \
-                      --query "properties.apiKey" -o tsv)
-
-                        if [ -z "$SWA_DEPLOYMENT_TOKEN" ]; then
-                          echo "❌ Token is EMPTY"
-                          exit 1
-                        else
-                          echo "✅ Token fetched"
-                        fi
-
-                    echo "##vso[task.setvariable variable=SWA_DEPLOYMENT_TOKEN;issecret=true]$SWA_DEPLOYMENT_TOKEN"
+                - task: AzureCLI@2
                   displayName: Get SWA Deployment Token
+                  inputs:
+                    azureSubscription: "todo-app-service-connection"
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      SWA_DEPLOYMENT_TOKEN=$(az staticwebapp secrets list \
+                        --name todo-app-${{ parameters.environment }}-frontend-static \
+                        --resource-group rg-todo-app-${{ parameters.environment }} \
+                        --query "properties.apiKey" -o tsv)
+
+                      if [ -z "$SWA_DEPLOYMENT_TOKEN" ]; then
+                        echo "❌ Token is EMPTY"
+                        exit 1
+                      else
+                        echo "✅ Token fetched"
+                      fi
+
+                      echo "##vso[task.setvariable variable=SWA_DEPLOYMENT_TOKEN;issecret=true]$SWA_DEPLOYMENT_TOKEN"
 
                 - task: AzureStaticWebApp@0
                   displayName: Deploy Azure Static Web App (${{ parameters.environment }})
