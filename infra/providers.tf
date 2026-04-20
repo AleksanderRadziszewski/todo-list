@@ -9,7 +9,11 @@ terraform {
   required_version = "=1.14.4"
 }
 provider "azurerm" {
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
 }
 
 resource "azurerm_resource_group" "rg_todo_app" {
