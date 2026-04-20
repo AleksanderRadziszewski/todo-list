@@ -72,8 +72,8 @@ stages:
                     scriptLocation: inlineScript
                     inlineScript: |
                       echo "Initializing backend"
-                      terraform init -migrate-state -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
-
+                      terraform init -migrate-state
+                      
                       echo "Planning"
                       terraform plan
 
