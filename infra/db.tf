@@ -1,5 +1,5 @@
 resource "azurerm_postgresql_flexible_server" "todo_app_server_db" {
-  name                   = "todo-app-server-db"
+  name                   = "todo-app-${var.environtment}server-db"
   resource_group_name    = azurerm_resource_group.rg_todo_app.name
   location               = var.location
   version                = "15"
