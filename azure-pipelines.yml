@@ -71,6 +71,10 @@ stages:
                     scriptType: bash
                     scriptLocation: inlineScript
                     inlineScript: |
+
+                      terraform import azurerm_key_vault_secret.postgres_password \
+                      "https://my-todo-app-dev-kv.vault.azure.net/secrets/POSTGRES-PASSWORD"
+                      
                       echo "Initializing backend"
                       terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
                       
