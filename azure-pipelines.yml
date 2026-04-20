@@ -71,13 +71,13 @@ stages:
                     scriptType: bash
                     scriptLocation: inlineScript
                     inlineScript: |
-
-                      terraform import azurerm_key_vault_secret.app_secrets \
-                      "https://my-todo-app-dev-kv.vault.azure.net/secrets/POSTGRES-PASSWORD/f3ee5f8c70f94cfca7e719f9dc449ca7"
                       
                       echo "Initializing backend"
                       terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
                       
+                      terraform import azurerm_key_vault_secret.app_secrets \
+                      "https://my-todo-app-dev-kv.vault.azure.net/secrets/POSTGRES-PASSWORD/f3ee5f8c70f94cfca7e719f9dc449ca7"
+
                       echo "Planning"
                       terraform plan
 
