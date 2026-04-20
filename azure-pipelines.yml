@@ -72,7 +72,7 @@ stages:
                     scriptLocation: inlineScript
                     inlineScript: |
                       echo "Initializing backend"
-                      terraform init -reconfigue -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
+                      terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
 
                       echo "Planning"
                       terraform plan
