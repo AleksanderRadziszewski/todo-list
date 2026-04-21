@@ -33,7 +33,8 @@ resource "azurerm_linux_web_app" "todo_app_as" {
 
 resource "random_password" "db_password" {
   length  = 20
-  special = true
+  special = false
+
 }
 
 resource "azurerm_key_vault" "my_todo_app_kv" {
