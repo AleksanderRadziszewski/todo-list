@@ -78,6 +78,14 @@ stages:
                       echo "Planning"
                       terraform plan -out=tfplan
 
+                      echo "Upload tfplan to Storage"
+                      az storage blob upload \
+                        --account-name tfstatetodoapp \
+                        --container-name plans \
+                        --name tfplan-$(Build.BuildId) \
+                        --file tfplan \
+                        --auth-mode login
+
                       echo "Applying"
                       terraform show tfplan
                       terraform apply -auto-approve
