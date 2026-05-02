@@ -83,12 +83,12 @@ stages:
                         --account-name tfstatetodoapp \
                         --container-name plans \
                         --name tfplan-$(Build.BuildId) \
-                        --file tfplan \
+                        --file $(System.DefaultWorkingDirectory)/infra/tfplan \
                         --auth-mode login
 
                       echo "Applying"
                       terraform show tfplan
-                      terraform apply -auto-approve
+                      terraform apply -auto-approve tfplan
                     workingDirectory: $(System.DefaultWorkingDirectory)/infra
                   env:
                     ARM_SUBSCRIPTION_ID: $(subscription_id)
