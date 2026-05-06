@@ -50,6 +50,8 @@ stages:
 
   - stage: Deploy
     displayName: Deploy
+    env:
+        ARM_SUBSCRIPTION_ID: $(subscription_id)
     jobs:
         - job: TerraformPlan
           displayName: Terraform Plan
@@ -76,7 +78,6 @@ stages:
                   terraform show tfplan/tfplan
                 workingDirectory: $(System.DefaultWorkingDirectory)/infra
               env:
-                ARM_SUBSCRIPTION_ID: $(subscription_id)
                 TF_VAR_environment: ${{ parameters.environment }}
                 TF_VAR_administrator_login: $(POSTGRES_USER)
                 TF_VAR_subscription_id: $(subscription_id)
@@ -119,8 +120,8 @@ stages:
                         terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
                         terraform apply -auto-approve $(Pipeline.Workspace)/tfplan/tfplan
                       workingDirectory: $(System.DefaultWorkingDirectory)/infra
-                    env:
-                      ARM_SUBSCRIPTION_ID: $(subscription_id)
+                    # env:
+                    #   ARM_SUBSCRIPTION_ID: $(subscription_id)
               # - task: AzureCLI@2
               #   displayName: Get SWA Deployment Token
               #   inputs:
