@@ -51,73 +51,81 @@ stages:
   - stage: Deploy
     displayName: Deploy
     jobs:
-      - deployment: Deploy
-        environment: ${{parameters.environment}}
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - checkout: self
-                - script: |
-                    TERRAFORM_VERSION="1.14.4"
-                    curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-                    unzip terraform.zip
-                    sudo mv terraform /usr/local/bin/terraform
-                    terraform -version
-                  displayName: Install Terraform
-                - task: AzureCLI@2
-                  inputs:
-                    azureSubscription: "todo-app-service-connection"
-                    scriptType: bash
-                    scriptLocation: inlineScript
-                    inlineScript: |
+        - job: TerraformPlan
+          displayName: Terraform Plan
+          pool:
+            vmImage: "ubuntu-latest"
+          steps:
+            - checkout: self
+            - script: |
+                TERRAFORM_VERSION="1.14.4"
+                curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+                unzip terraform.zip
+                sudo mv terraform /usr/local/bin/terraform
+                terraform -version
+              displayName: Install Terraform
 
-                      echo "Initializing backend"
-                      terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
+            - task: AzureCLI@2
+              displayName: Run Terraform Plan
+              inputs:
+                azureSubscription: "todo-app-service-connection"
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |
+                  terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
+                  terraform plan -out=tfplan
+                workingDirectory: $(System.DefaultWorkingDirectory)/infra
+              env:
+                ARM_SUBSCRIPTION_ID: $(subscription_id)
+                TF_VAR_environment: ${{ parameters.environment }}
+                TF_VAR_administrator_login: $(POSTGRES_USER)
+                TF_VAR_subscription_id: $(subscription_id)
+                TF_VAR_dockerhub_username: $(DOCKERHUB-USER)
+                TF_VAR_postgres_user: $(POSTGRES_USER)
+                TF_VAR_postgres_port: $(POSTGRES_PORT)
+                TF_VAR_postgres_db: $(POSTGRES_DB)
 
-                      echo "Planning"
-                      terraform plan -out=tfplan
+        - deployment: TerraformApply
+          displayName: Terraform Apply
+          dependsOn: TerraformPlan
+          environment: ${{parameters.environment}}   # 👈 THIS triggers approval
+          strategy:
+            runOnce:
+              deploy:
+                steps:
+                  - checkout: self
 
-                      echo "Upload tfplan to Storage"
-                      az storage blob upload \
-                        --account-name tfstatetodoapp \
-                        --container-name plans \
-                        --name tfplan-$(Build.BuildId) \
-                        --file $(System.DefaultWorkingDirectory)/infra/tfplan \
-                        --auth-mode login
+                  - download: current
+                    artifact: tfplan
 
-                      echo "Applying"
-                      terraform show tfplan
-                      terraform apply -auto-approve tfplan
-                    workingDirectory: $(System.DefaultWorkingDirectory)/infra
-                  env:
-                    ARM_SUBSCRIPTION_ID: $(subscription_id)
-                    TF_VAR_environment: ${{ parameters.environment }}
-                    TF_VAR_administrator_login: $(POSTGRES_USER)
-                    TF_VAR_subscription_id: $(subscription_id)
-                    TF_VAR_dockerhub_username: $(DOCKERHUB-USER)
-                    TF_VAR_postgres_user: $(POSTGRES_USER)
-                    TF_VAR_postgres_port: $(POSTGRES_PORT)
-                    TF_VAR_postgres_db: $(POSTGRES_DB)
-                  displayName: Build Infra
+                  - script: |
+                      TERRAFORM_VERSION="1.14.4"
+                      curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+                      unzip terraform.zip
+                      sudo mv terraform /usr/local/bin/terraform
+                    displayName: Install Terraform
 
-                - task: AzureCLI@2
-                  displayName: Get SWA Deployment Token
-                  inputs:
-                    azureSubscription: "todo-app-service-connection"
-                    scriptType: bash
-                    scriptLocation: inlineScript
-                    inlineScript: |
-                      SWA_DEPLOYMENT_TOKEN=$(az staticwebapp secrets list \
-                        --name todo-app-${{ parameters.environment }}-frontend-static \
-                        --resource-group rg-todo-app-${{ parameters.environment }} \
-                        --query "properties.apiKey" -o tsv)
+                  - task: AzureCLI@2
+                    displayName: Apply Terraform
+                    inputs:
+                      azureSubscription: "todo-app-service-connection"
+                      scriptType: bash
+                      scriptLocation: inlineScript
+                      inlineScript: |
+                        terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
+                        terraform apply tfplan
+                      workingDirectory: $(System.DefaultWorkingDirectory)/infra
 
-                      echo "##vso[task.setvariable variable=SWA_DEPLOYMENT_TOKEN;issecret=true]$SWA_DEPLOYMENT_TOKEN"
+              # - task: AzureCLI@2
+              #   displayName: Get SWA Deployment Token
+              #   inputs:
+              #     azureSubscription: "todo-app-service-connection"
+              #     scriptType: bash
+              #     scriptLocation: inlineScript
+              #     inlineScript: |
+              #       SWA_DEPLOYMENT_TOKEN=$(az staticwebapp secrets list \
+              #         --name todo-app-${{ parameters.environment }}-frontend-static \
+              #         --resource-group rg-todo-app-${{ parameters.environment }} \
+              #         --query "properties.apiKey" -o tsv)
 
-                - task: AzureStaticWebApp@0
-                  displayName: Deploy Azure Static Web App (${{ parameters.environment }})
-                  inputs:
-                    app_location: "/frontend"
-                    output_location: "/dist"
-                    azure_static_web_apps_api_token: $(SWA_DEPLOYMENT_TOKEN)
+              #       echo "##vso[task.setvariable variable=SWA_DEPLOYMENT_TOKEN;issecret=true]$SWA_DEPLOYMENT_TOKEN"
