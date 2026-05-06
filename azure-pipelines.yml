@@ -53,8 +53,6 @@ stages:
     jobs:
         - job: TerraformPlan
           displayName: Terraform Plan
-          pool:
-            vmImage: "ubuntu-latest"
           steps:
             - checkout: self
             - script: |
@@ -66,14 +64,17 @@ stages:
               displayName: Install Terraform
 
             - task: AzureCLI@2
-              displayName: Run Terraform Plan
+              displayName: Terraform Init & Plan
               inputs:
                 azureSubscription: "todo-app-service-connection"
                 scriptType: bash
                 scriptLocation: inlineScript
                 inlineScript: |
+                  cd $(WORKING_DIR)
+                  mkdir -p tfplan
                   terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
-                  terraform plan -out=tfplan
+                  terraform plan -out=tfplan/tfplan
+                  terraform show tfplan/tfplan
                 workingDirectory: $(System.DefaultWorkingDirectory)/infra
               env:
                 ARM_SUBSCRIPTION_ID: $(subscription_id)
@@ -85,9 +86,13 @@ stages:
                 TF_VAR_postgres_port: $(POSTGRES_PORT)
                 TF_VAR_postgres_db: $(POSTGRES_DB)
 
+            - publish: $(System.DefaultWorkingDirectory)/infra/tfplan
+              artifact: tfplan
+
         - deployment: TerraformApply
           displayName: Terraform Apply
           dependsOn: TerraformPlan
+          condition: succeeded()
           environment: ${{parameters.environment}}   # 👈 THIS triggers approval
           strategy:
             runOnce:
@@ -113,7 +118,7 @@ stages:
                       scriptLocation: inlineScript
                       inlineScript: |
                         terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
-                        terraform apply tfplan
+                        terraform apply $(System.DefaultWorkingDirectory)/infra/tfplan/tfplan -auto-approve
                       workingDirectory: $(System.DefaultWorkingDirectory)/infra
 
               # - task: AzureCLI@2
