@@ -62,8 +62,6 @@ stages:
                 sudo mv terraform /usr/local/bin/terraform
                 terraform -version
               displayName: Install Terraform
-              env:
-                  ARM_SUBSCRIPTION_ID: $(subscription_id)
 
             - task: AzureCLI@2
               displayName: Terraform Init & Plan
@@ -78,6 +76,7 @@ stages:
                   terraform plan -out=tfplan/tfplan.binary
                 workingDirectory: $(System.DefaultWorkingDirectory)/infra
               env:
+                ARM_SUBSCRIPTION_ID: $(subscription_id)
                 TF_VAR_environment: ${{ parameters.environment }}
                 TF_VAR_administrator_login: $(POSTGRES_USER)
                 TF_VAR_subscription_id: $(subscription_id)
@@ -92,7 +91,6 @@ stages:
         - job: ManualApproval
           displayName: Production Approval
           condition: eq('${{ parameters.environment }}', 'Production')
-
           pool: server
 
           steps:
@@ -107,9 +105,14 @@ stages:
 
         - deployment: TerraformApply
           displayName: Terraform Apply
-          dependsOn: TerraformPlan
-          condition: succeeded()
-          environment: ${{parameters.environment}}   # 👈 THIS triggers approval
+          dependsOn:
+          - TerraformPlan
+          - ManualApproval
+          condition: |
+            or(
+              ne('${{ parameters.environment }}', 'Production'),
+              succeeded('ManualApproval')
+            )
           strategy:
             runOnce:
               deploy:
@@ -136,8 +139,8 @@ stages:
                         terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
                         terraform apply -auto-approve $(Pipeline.Workspace)/tfplan/tfplan.binary
                       workingDirectory: $(System.DefaultWorkingDirectory)/infra
-                    # env:
-                    #   ARM_SUBSCRIPTION_ID: $(subscription_id)
+                    env:
+                      ARM_SUBSCRIPTION_ID: $(subscription_id)
               # - task: AzureCLI@2
               #   displayName: Get SWA Deployment Token
               #   inputs:
