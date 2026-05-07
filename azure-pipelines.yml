@@ -50,8 +50,6 @@ stages:
 
   - stage: Deploy
     displayName: Deploy
-    env:
-        ARM_SUBSCRIPTION_ID: $(subscription_id)
     jobs:
         - job: TerraformPlan
           displayName: Terraform Plan
@@ -64,6 +62,8 @@ stages:
                 sudo mv terraform /usr/local/bin/terraform
                 terraform -version
               displayName: Install Terraform
+              env:
+                  ARM_SUBSCRIPTION_ID: $(subscription_id)
 
             - task: AzureCLI@2
               displayName: Terraform Init & Plan
@@ -100,7 +100,7 @@ stages:
             timeoutInMinutes: 1440
             inputs:
               notifyUsers: |
-                ops-team@company.com
+                radziszewski.aleksander@gmail.com
               instructions: |
                 Please approve production deployment.
               onTimeout: reject
@@ -108,8 +108,7 @@ stages:
         - deployment: TerraformApply
           displayName: Terraform Apply
           dependsOn: TerraformPlan
-          condition: succeeded()
-          environment: ${{parameters.environment}}   # 👈 THIS triggers approval
+          condition: succeeded()  # 👈 THIS triggers approval
           strategy:
             runOnce:
               deploy:
