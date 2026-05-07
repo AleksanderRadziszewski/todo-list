@@ -138,16 +138,22 @@ stages:
                 workingDirectory: $(System.DefaultWorkingDirectory)/infra
               env:
                 ARM_SUBSCRIPTION_ID: $(subscription_id)
-              # - task: AzureCLI@2
-              #   displayName: Get SWA Deployment Token
-              #   inputs:
-              #     azureSubscription: "todo-app-service-connection"
-              #     scriptType: bash
-              #     scriptLocation: inlineScript
-              #     inlineScript: |
-              #       SWA_DEPLOYMENT_TOKEN=$(az staticwebapp secrets list \
-              #         --name todo-app-${{ parameters.environment }}-frontend-static \
-              #         --resource-group rg-todo-app-${{ parameters.environment }} \
-              #         --query "properties.apiKey" -o tsv)
 
-              #       echo "##vso[task.setvariable variable=SWA_DEPLOYMENT_TOKEN;issecret=true]$SWA_DEPLOYMENT_TOKEN"
+        - job: GetSWADeploymentToken
+          displayName: Get SWA Deployment Token
+          steps:
+            - task: AzureCLI@2
+              displayName: Get SWA Deployment Token
+              inputs:
+                azureSubscription: "todo-app-service-connection"
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |
+                  SWA_DEPLOYMENT_TOKEN=$(az staticwebapp secrets list \
+                    --name todo-app-${{ parameters.environment }}-frontend-static \
+                    --resource-group rg-todo-app-${{ parameters.environment }} \
+                    --query "properties.apiKey" -o tsv)
+
+                  echo "##vso[task.setvariable variable=SWA_DEPLOYMENT_TOKEN;issecret=true]$SWA_DEPLOYMENT_TOKEN"
+              env:
+                ARM_SUBSCRIPTION_ID: $(subscription_id)
