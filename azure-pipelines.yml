@@ -110,7 +110,7 @@ stages:
           - ManualApproval
           condition: |
             or(
-              ne('${{ parameters.environment }}', 'Production'),
+              ne('${{ parameters.environment }}', 'prod'),
               succeeded('ManualApproval')
             )
           strategy:
