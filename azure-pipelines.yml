@@ -74,8 +74,8 @@ stages:
                 inlineScript: |
                   mkdir -p tfplan
                   terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
-                  terraform plan -out=tfplan/tfplan
-                  terraform show tfplan/tfplan
+                  terraform plan -out=tfplan/tfplan.binary
+                  terraform show tfplan/tfplan.binary
                 workingDirectory: $(System.DefaultWorkingDirectory)/infra
               env:
                 TF_VAR_environment: ${{ parameters.environment }}
@@ -134,7 +134,7 @@ stages:
                       scriptLocation: inlineScript
                       inlineScript: |
                         terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
-                        terraform apply -auto-approve $(Pipeline.Workspace)/tfplan/tfplan
+                        terraform apply -auto-approve $(Pipeline.Workspace)/tfplan/tfplan.binary
                       workingDirectory: $(System.DefaultWorkingDirectory)/infra
                     # env:
                     #   ARM_SUBSCRIPTION_ID: $(subscription_id)
