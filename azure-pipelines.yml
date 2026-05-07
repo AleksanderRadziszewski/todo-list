@@ -103,7 +103,7 @@ stages:
                 Please approve production deployment.
               onTimeout: reject
 
-        - deployment: TerraformApply
+        - job: TerraformApply
           displayName: Terraform Apply
           dependsOn:
           - TerraformPlan
@@ -113,34 +113,29 @@ stages:
               ne('${{ parameters.environment }}', 'prod'),
               succeeded('ManualApproval')
             )
-          strategy:
-            runOnce:
-              deploy:
-                steps:
-                  - checkout: self
+          steps:
+            - checkout: self
 
-                  - download: current
-                    artifact: tfplan
+            - download: current
+              artifact: tfplan
 
-                  - script: |
-                      TERRAFORM_VERSION="1.14.4"
-                      curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-                      unzip terraform.zip
-                      sudo mv terraform /usr/local/bin/terraform
-                    displayName: Install Terraform
+            - script: |
+                TERRAFORM_VERSION="1.14.4"
+                curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+                unzip terraform.zip
+                sudo mv terraform /usr/local/bin/terraform
+              displayName: Install Terraform
 
-                  - task: AzureCLI@2
-                    displayName: Apply Terraform
-                    inputs:
-                      azureSubscription: "todo-app-service-connection"
-                      scriptType: bash
-                      scriptLocation: inlineScript
-                      inlineScript: |
-                        terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
-                        terraform apply -auto-approve $(Pipeline.Workspace)/tfplan/tfplan.binary
-                      workingDirectory: $(System.DefaultWorkingDirectory)/infra
-                    env:
-                      ARM_SUBSCRIPTION_ID: $(subscription_id)
+            - task: AzureCLI@2
+              displayName: Apply Terraform
+              inputs:
+                azureSubscription: "todo-app-service-connection"
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |
+                  terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
+                  terraform apply -auto-approve $(Pipeline.Workspace)/tfplan/tfplan.binary
+                workingDirectory: $(System.DefaultWorkingDirectory)/infra
               # - task: AzureCLI@2
               #   displayName: Get SWA Deployment Token
               #   inputs:
