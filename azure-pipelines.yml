@@ -108,7 +108,8 @@ stages:
         - deployment: TerraformApply
           displayName: Terraform Apply
           dependsOn: TerraformPlan
-          condition: succeeded()  # 👈 THIS triggers approval
+          condition: succeeded()
+          environment: ${{parameters.environment}}   # 👈 THIS triggers approval
           strategy:
             runOnce:
               deploy:
