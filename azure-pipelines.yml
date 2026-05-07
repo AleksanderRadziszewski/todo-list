@@ -90,7 +90,7 @@ stages:
 
         - job: ManualApproval
           displayName: Production Approval
-          condition: eq('${{ parameters.environment }}', 'Production')
+          condition: eq('${{ parameters.environment }}', 'prod')
           pool: server
 
           steps:
