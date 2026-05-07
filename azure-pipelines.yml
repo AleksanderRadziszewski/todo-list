@@ -89,6 +89,22 @@ stages:
             - publish: $(System.DefaultWorkingDirectory)/infra/tfplan
               artifact: tfplan
 
+        - job: ManualApproval
+          displayName: Production Approval
+          condition: eq('${{ parameters.environment }}', 'Production')
+
+          pool: server
+
+          steps:
+          - task: ManualValidation@0
+            timeoutInMinutes: 1440
+            inputs:
+              notifyUsers: |
+                ops-team@company.com
+              instructions: |
+                Please approve production deployment.
+              onTimeout: reject
+
         - deployment: TerraformApply
           displayName: Terraform Apply
           dependsOn: TerraformPlan
