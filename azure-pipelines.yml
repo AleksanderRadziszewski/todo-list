@@ -72,8 +72,8 @@ stages:
                 inlineScript: |
                   mkdir -p tfplan
                   terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
-                  terraform validate
                   terraform plan -out=tfplan/tfplan.binary
+                  terraform show tfplan/tfplan.binary > tfplan/tfplan.txt
                 workingDirectory: $(System.DefaultWorkingDirectory)/infra
               env:
                 ARM_SUBSCRIPTION_ID: $(subscription_id)
