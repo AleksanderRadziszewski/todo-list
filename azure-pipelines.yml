@@ -103,6 +103,19 @@ stages:
                 Please approve production deployment.
               onTimeout: reject
 
+          - task: AzureCLI@2
+            displayName: Upload plan files
+            inputs:
+              azureSubscription: 'YOUR-SERVICE-CONNECTION'
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                az storage blob upload-batch \
+                  --account-name tfstatetodoapp \
+                  --destination terraform-plans \
+                  --source tfplan \
+                  --auth-mode login
+
         - job: TerraformApply
           displayName: Terraform Apply
           dependsOn:
