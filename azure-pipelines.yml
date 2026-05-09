@@ -117,7 +117,7 @@ stages:
             - checkout: self
 
             - download: current
-              artifact: tfplan
+              artifact: tfplan-$(Build.BuildId).bin
 
             - script: |
                 TERRAFORM_VERSION="1.14.4"
