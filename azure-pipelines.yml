@@ -136,7 +136,7 @@ stages:
                   az storage blob upload-batch \
                     --account-name tfstatetodoapp \
                     --destination terraform-plans \
-                    --source tfplan \
+                    --source $(Pipeline.Workspace)/tfplan \
                     --auth-mode login
 
             - task: AzureCLI@2
