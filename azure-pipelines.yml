@@ -117,7 +117,7 @@ stages:
             - checkout: self
 
             - download: current
-              artifact: tfplan-$(Build.BuildId).bin
+              artifact: tfplan
 
             - script: |
                 TERRAFORM_VERSION="1.14.4"
@@ -147,7 +147,7 @@ stages:
                 scriptLocation: inlineScript
                 inlineScript: |
                   terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
-                  terraform apply -auto-approve $(Pipeline.Workspace)/tfplan/tfplan.binary
+                  terraform apply -auto-approve $(Pipeline.Workspace)/tfplan/tfplan-$(Build.BuildId).bin
                 workingDirectory: $(System.DefaultWorkingDirectory)/infra
               env:
                 ARM_SUBSCRIPTION_ID: $(subscription_id)
