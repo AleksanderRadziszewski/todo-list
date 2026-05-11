@@ -135,7 +135,7 @@ stages:
           or(
           ne('${{ parameters.environment }}', 'prod'),
           succeeded('ManualApproval')
-          )
+          ) or eq('${{ parameters.action }}', 'destroy')
           )
         steps:
           - checkout: self
