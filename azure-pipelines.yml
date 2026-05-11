@@ -178,6 +178,7 @@ stages:
 
       - job: GetSWADeploymentToken
         displayName: Get SWA Deployment Token
+        dependsOn: UploadPlanAndTerraformApply
         steps:
           - task: AzureCLI@2
             displayName: Get SWA Deployment Token
