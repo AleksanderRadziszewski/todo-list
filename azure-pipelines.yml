@@ -108,12 +108,13 @@ stages:
           dependsOn:
           - TerraformPlan
           - ManualApproval
-          condition: |
+          condition: and(
             eq(dependencies.TerraformPlan.outputs['TerraformInitPlan.terraformHasChanges'], 'true'),
             or(
               ne('${{ parameters.environment }}', 'prod'),
               succeeded('ManualApproval')
             )
+          )
           steps:
             - checkout: self
 
