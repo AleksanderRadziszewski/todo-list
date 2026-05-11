@@ -92,7 +92,7 @@ stages:
           displayName: Production Approval
           condition: and (
             eq('${{ parameters.environment }}', 'prod'),
-            eq(dependecies.TerraformPlan.outputs['TerraformInitPlan.terraformHasChanges'], 'true')
+            eq(dependencies.TerraformPlan.outputs['TerraformInitPlan.terraformHasChanges'], 'true')
             )
           pool: server
 
