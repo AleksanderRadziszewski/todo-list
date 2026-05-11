@@ -10,6 +10,14 @@ parameters:
       - dev
       - prod
 
+  - name: action
+    displayName: Terraform Action
+    type: string
+    default: apply
+    values:
+      - apply
+      - destroy
+
 variables:
   - group: "todo-app-variables-kv"
   - group: "todo-app-${{parameters.environment}}-variables"
@@ -51,127 +59,138 @@ stages:
   - stage: Deploy
     displayName: Deploy
     jobs:
-        - job: TerraformPlan
-          displayName: Terraform Plan
-          steps:
-            - checkout: self
-            - script: |
-                TERRAFORM_VERSION="1.14.4"
-                curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-                unzip terraform.zip
-                sudo mv terraform /usr/local/bin/terraform
-                terraform -version
-              displayName: Install Terraform
+      - job: TerraformPlan
+        displayName: Terraform Plan
+        steps:
+          - checkout: self
+          - script: |
+              TERRAFORM_VERSION="1.14.4"
+              curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+              unzip terraform.zip
+              sudo mv terraform /usr/local/bin/terraform
+              terraform -version
+            displayName: Install Terraform
 
-            - task: AzureCLI@2
-              displayName: Terraform Init & Plan
-              inputs:
-                azureSubscription: "todo-app-service-connection"
-                scriptType: bash
-                scriptLocation: inlineScript
-                inlineScript: |
-                  mkdir -p tfplan
-                  terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
-                  terraform plan -out=tfplan/tfplan-$(Build.BuildId).bin
-                  terraform show tfplan/tfplan-$(Build.BuildId).bin > tfplan/tfplan.txt
-                workingDirectory: $(System.DefaultWorkingDirectory)/infra
-              env:
-                ARM_SUBSCRIPTION_ID: $(subscription_id)
-                TF_VAR_environment: ${{ parameters.environment }}
-                TF_VAR_administrator_login: $(POSTGRES_USER)
-                TF_VAR_subscription_id: $(subscription_id)
-                TF_VAR_dockerhub_username: $(DOCKERHUB-USER)
-                TF_VAR_postgres_user: $(POSTGRES_USER)
-                TF_VAR_postgres_port: $(POSTGRES_PORT)
-                TF_VAR_postgres_db: $(POSTGRES_DB)
+          - task: AzureCLI@2
+            displayName: Terraform Init & Plan
+            inputs:
+              azureSubscription: "todo-app-service-connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                mkdir -p tfplan
+                terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
+                if ["${{parameters.action}}"="destroy"]; then \
+                  terraform plan \
+                    -destroy \
+                    -out=tfplan/tfplan-$(Build.BuildId).bin \
+                    -detailed-exitcode
+                else
+                  terraform plan \
+                    -out=tfplan/tfplan-$(Build.BuildId).bin \
+                    -detailed-exitcode
+                fi
+                terraform show tfplan/tfplan-$(Build.BuildId).bin > tfplan/tfplan.txt
+              workingDirectory: $(System.DefaultWorkingDirectory)/infra
+            env:
+              ARM_SUBSCRIPTION_ID: $(subscription_id)
+              TF_VAR_environment: ${{ parameters.environment }}
+              TF_VAR_administrator_login: $(POSTGRES_USER)
+              TF_VAR_subscription_id: $(subscription_id)
+              TF_VAR_dockerhub_username: $(DOCKERHUB-USER)
+              TF_VAR_postgres_user: $(POSTGRES_USER)
+              TF_VAR_postgres_port: $(POSTGRES_PORT)
+              TF_VAR_postgres_db: $(POSTGRES_DB)
 
-            - publish: $(System.DefaultWorkingDirectory)/infra/tfplan
-              artifact: tfplan
+          - publish: $(System.DefaultWorkingDirectory)/infra/tfplan
+            artifact: tfplan
 
-        - job: ManualApproval
-          displayName: Production Approval
-          condition: and (
-            eq('${{ parameters.environment }}', 'prod'),
-            eq(dependencies.TerraformPlan.outputs['TerraformInitPlan.terraformHasChanges'], 'true')
-            )
-          pool: server
+      - job: ManualApproval
+        displayName: Production Approval
+        condition: and (
+          eq('${{ parameters.environment }}', 'prod'),
+          eq(dependencies.TerraformPlan.outputs['TerraformInitPlan.terraformHasChanges'], 'true')
+          )
+        pool: server
 
-          steps:
+        steps:
           - task: ManualValidation@0
             timeoutInMinutes: 1440
             inputs:
               notifyUsers: |
                 radziszewski.aleksander@gmail.com
               instructions: |
-                Please approve production deployment.
+                WARNING: You are about to run Terraform ${{ parameters.action }}
+                for environment: ${{ parameters.environment }}.
+                This may delete all infrastructure.
               onTimeout: reject
 
-        - job: UploadPlanAndTerraformApply
-          displayName: Terraform Apply
-          dependsOn:
+      - job: UploadPlanAndTerraformApply
+        displayName: Terraform Apply
+        dependsOn:
           - TerraformPlan
           - ManualApproval
-          condition: and(
-              eq(dependencies.TerraformPlan.outputs['TerraformInitPlan.terraformHasChanges'], 'true'),
-              or(
-                ne('${{ parameters.environment }}', 'prod'),
-                succeeded('ManualApproval')
-              )
-            )
-          steps:
-            - checkout: self
+        condition: and(
+          eq(dependencies.TerraformPlan.outputs['TerraformInitPlan.terraformHasChanges'], 'true'),
+          or(
+          ne('${{ parameters.environment }}', 'prod'),
+          succeeded('ManualApproval')
+          )
+          )
+        steps:
+          - checkout: self
 
-            - download: current
-              artifact: tfplan
+          - download: current
+            artifact: tfplan
 
-            - script: |
-                TERRAFORM_VERSION="1.14.4"
-                curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-                unzip terraform.zip
-                sudo mv terraform /usr/local/bin/terraform
-              displayName: Install Terraform
+          - script: |
+              TERRAFORM_VERSION="1.14.4"
+              curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+              unzip terraform.zip
+              sudo mv terraform /usr/local/bin/terraform
+            displayName: Install Terraform
 
-            - task: AzureCLI@2
-              displayName: Upload plan files
-              inputs:
-                azureSubscription: "todo-app-service-connection"
-                scriptType: bash
-                scriptLocation: inlineScript
-                inlineScript: |
-                  az storage blob upload-batch \
-                    --account-name tfstatetodoapp \
-                    --destination plans \
-                    --source $(Pipeline.Workspace)/tfplan \
-                    --auth-mode login
+          - task: AzureCLI@2
+            displayName: Upload plan files
+            inputs:
+              azureSubscription: "todo-app-service-connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                az storage blob upload-batch \
+                  --account-name tfstatetodoapp \
+                  --destination plans \
+                  --source $(Pipeline.Workspace)/tfplan \
+                  --auth-mode login
 
-            - task: AzureCLI@2
-              displayName: Apply Terraform
-              inputs:
-                azureSubscription: "todo-app-service-connection"
-                scriptType: bash
-                scriptLocation: inlineScript
-                inlineScript: |
-                  terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
-                  terraform apply -auto-approve $(Pipeline.Workspace)/tfplan/tfplan-$(Build.BuildId).bin
-                workingDirectory: $(System.DefaultWorkingDirectory)/infra
-              env:
-                ARM_SUBSCRIPTION_ID: $(subscription_id)
+          - task: AzureCLI@2
+            displayName: Apply Terraform
+            inputs:
+              azureSubscription: "todo-app-service-connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
+                terraform apply -auto-approve $(Pipeline.Workspace)/tfplan/tfplan-$(Build.BuildId).bin
+              workingDirectory: $(System.DefaultWorkingDirectory)/infra
+            env:
+              ARM_SUBSCRIPTION_ID: $(subscription_id)
 
-        - job: GetSWADeploymentToken
-          displayName: Get SWA Deployment Token
-          steps:
-            - task: AzureCLI@2
-              displayName: Get SWA Deployment Token
-              inputs:
-                azureSubscription: "todo-app-service-connection"
-                scriptType: bash
-                scriptLocation: inlineScript
-                inlineScript: |
-                  SWA_DEPLOYMENT_TOKEN=$(az staticwebapp secrets list \
-                    --name todo-app-${{ parameters.environment }}-frontend-static \
-                    --resource-group rg-todo-app-${{ parameters.environment }} \
-                    --query "properties.apiKey" -o tsv)
+      - job: GetSWADeploymentToken
+        displayName: Get SWA Deployment Token
+        steps:
+          - task: AzureCLI@2
+            displayName: Get SWA Deployment Token
+            inputs:
+              azureSubscription: "todo-app-service-connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                SWA_DEPLOYMENT_TOKEN=$(az staticwebapp secrets list \
+                  --name todo-app-${{ parameters.environment }}-frontend-static \
+                  --resource-group rg-todo-app-${{ parameters.environment }} \
+                  --query "properties.apiKey" -o tsv)
 
-                  echo "##vso[task.setvariable variable=SWA_DEPLOYMENT_TOKEN;issecret=true]$SWA_DEPLOYMENT_TOKEN"
-              env:
-                ARM_SUBSCRIPTION_ID: $(subscription_id)
+                echo "##vso[task.setvariable variable=SWA_DEPLOYMENT_TOKEN;issecret=true]$SWA_DEPLOYMENT_TOKEN"
+            env:
+              ARM_SUBSCRIPTION_ID: $(subscription_id)
