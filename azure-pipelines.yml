@@ -90,7 +90,10 @@ stages:
 
         - job: ManualApproval
           displayName: Production Approval
-          condition: eq('${{ parameters.environment }}', 'prod')
+          condition: and (
+            eq('${{ parameters.environment }}', 'prod'),
+            eq(dependecies.TerraformPlan.outputs['TerraformInitPlan.terraformHasChanges'], 'true')
+            )
           pool: server
 
           steps:
