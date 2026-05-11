@@ -109,12 +109,10 @@ stages:
         displayName: Production Approval
         dependsOn:
           - TerraformPlan
-        condition: and(
+        condition: or(
           eq(dependencies.TerraformPlan.outputs['TerraformInitPlan.terraformHasChanges'], 'true'),
-          or(
           eq('${{ parameters.environment }}', 'prod'),
           eq('${{ parameters.action }}', 'destroy')
-          )
           )
         pool: server
 
