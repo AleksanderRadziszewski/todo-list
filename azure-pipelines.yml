@@ -135,7 +135,7 @@ stages:
                 inlineScript: |
                   az storage blob upload-batch \
                     --account-name tfstatetodoapp \
-                    --destination terraform-plans \
+                    --destination plans \
                     --source $(Pipeline.Workspace)/tfplan \
                     --auth-mode login
 
