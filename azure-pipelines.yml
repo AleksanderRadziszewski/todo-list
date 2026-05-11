@@ -132,7 +132,7 @@ stages:
         dependsOn:
           - TerraformPlan
           - ManualApproval
-        condition: and(
+        condition: or(
           in('${{ parameters.action }}', 'apply', 'destroy'),
           eq(dependencies.TerraformPlan.outputs['TerraformInitPlan.terraformHasChanges'], 'true'),
           or(
