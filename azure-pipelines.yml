@@ -80,17 +80,36 @@ stages:
               inlineScript: |
                 mkdir -p tfplan
                 terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
-                if ["${{parameters.action}}"="destroy"]; then \
+                set +e
+
+                if [ "${{ parameters.action }}" = "destroy" ]; then
+                  echo "Creating DESTROY plan..."
                   terraform plan \
                     -destroy \
                     -out=tfplan/tfplan-$(Build.BuildId).bin \
                     -detailed-exitcode
                 else
+                  echo "Creating APPLY plan..."
                   terraform plan \
                     -out=tfplan/tfplan-$(Build.BuildId).bin \
                     -detailed-exitcode
                 fi
-                terraform show tfplan/tfplan-$(Build.BuildId).bin > tfplan/tfplan.txt
+
+                EXIT_CODE=$?
+                set -e
+
+                if [ $EXIT_CODE -eq 1 ]; then
+                  echo "Terraform plan failed."
+                  exit 1
+                elif [ $EXIT_CODE -eq 0 ]; then
+                  echo "No infrastructure changes detected."
+                  echo "##vso[task.setvariable variable=terraformHasChanges;isOutput=true]false"
+                elif [ $EXIT_CODE -eq 2 ]; then
+                  echo "Infrastructure changes detected."
+                  terraform show tfplan/tfplan-$(Build.BuildId).bin > tfplan/tfplan.txt
+                  echo "##vso[task.setvariable variable=terraformHasChanges;isOutput=true]true"
+                fi
+                          terraform show tfplan/tfplan-$(Build.BuildId).bin > tfplan/tfplan.txt
               workingDirectory: $(System.DefaultWorkingDirectory)/infra
             env:
               ARM_SUBSCRIPTION_ID: $(subscription_id)
