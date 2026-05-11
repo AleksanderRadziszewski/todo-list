@@ -107,9 +107,14 @@ stages:
 
       - job: ManualApproval
         displayName: Production Approval
-        condition: and (
+        dependsOn:
+          - TerraformPlan
+        condition: and(
+          eq(dependencies.TerraformPlan.outputs['TerraformInitPlan.terraformHasChanges'], 'true'),
+          or(
           eq('${{ parameters.environment }}', 'prod'),
-          eq(dependencies.TerraformPlan.outputs['TerraformInitPlan.terraformHasChanges'], 'true')
+          eq('${{ parameters.action }}', 'destroy')
+          )
           )
         pool: server
 
@@ -120,9 +125,8 @@ stages:
               notifyUsers: |
                 radziszewski.aleksander@gmail.com
               instructions: |
-                WARNING: You are about to run Terraform ${{ parameters.action }}
-                for environment: ${{ parameters.environment }}.
-                This may delete all infrastructure.
+                Please approve Terraform ${{ parameters.action }}
+                for the ${{ parameters.environment }} environment.
               onTimeout: reject
 
       - job: UploadPlanAndTerraformApply
@@ -131,11 +135,12 @@ stages:
           - TerraformPlan
           - ManualApproval
         condition: and(
+          in('${{ parameters.action }}', 'apply', 'destroy'),
           eq(dependencies.TerraformPlan.outputs['TerraformInitPlan.terraformHasChanges'], 'true'),
           or(
           ne('${{ parameters.environment }}', 'prod'),
           succeeded('ManualApproval')
-          ) or eq('${{ parameters.action }}', 'destroy')
+          )
           )
         steps:
           - checkout: self
