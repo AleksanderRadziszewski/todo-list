@@ -193,7 +193,17 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
+
+                START_TIME=$(date +%s)
                 terraform apply -auto-approve $(Pipeline.Workspace)/tfplan/tfplan-$(Build.BuildId).bin
+
+                END_TIME=$(date +%s)
+                DURATION=$((END_TIME - START_TIME))
+
+                MINUTES=$((DURATION / 60))
+                SECONDS=$((DURATION % 60))
+
+                 echo "##[section]Terraform apply completed in ${MINUTES}m ${SECONDS}s"
               workingDirectory: $(System.DefaultWorkingDirectory)/infra
             env:
               ARM_SUBSCRIPTION_ID: $(subscription_id)
