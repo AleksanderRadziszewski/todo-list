@@ -81,8 +81,10 @@ stages:
               inlineScript: |
                 mkdir -p tfplan
                 terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
-                set +e
+                terraform import azurerm_key_vault_secret.postgres_password \
+                "https://my-todo-app-prod-kv.vault.azure.net/secrets/POSTGRES-PASSWORD"
 
+                set +e
                 if [ "${{ parameters.action }}" = "destroy" ]; then
                   echo "Creating DESTROY plan..."
                   terraform plan \
