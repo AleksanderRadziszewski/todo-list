@@ -81,8 +81,9 @@ stages:
               inlineScript: |
                 mkdir -p tfplan
                 terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
-                terraform state list
-                terraform state pull > state.json
+                terraform import azurerm_resource_group.main \
+                /subscriptions/31e42eba-dfb6-47c1-b408-734f6602ed82/resourceGroups/rg-todo-app-prod
+                terraform state pull
                 set +e
 
                 if [ "${{ parameters.action }}" = "destroy" ]; then
