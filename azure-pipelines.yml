@@ -152,9 +152,14 @@ stages:
         displayName: Production Approval
         dependsOn:
           - TerraformPlan
-        condition: or (
-          and(eq('${{ parameters.environment }}', 'prod'), eq(dependencies.TerraformPlan.outputs['TerraformPlan.terraformHasChanges'], 'true')),
-          and(eq('${{ parameters.environment }}', 'prod'), eq(dependencies.TerraformPlan.outputs['CheckStoragePlans.storageHasPlans'], 'false'))
+        condition: and(
+          succeeded(),
+          eq('${{ parameters.environment }}', 'prod'),
+          or(
+          eq('${{ parameters.action }}', 'destroy'),
+          eq(dependencies.TerraformPlan.outputs['TerraformPlan.terraformHasChanges'], 'true'),
+          eq(dependencies.TerraformPlan.outputs['CheckStoragePlans.storageHasPlans'], 'false')
+          )
           )
         pool: server
 
@@ -178,8 +183,8 @@ stages:
           in('${{ parameters.action }}', 'apply', 'destroy'),
           succeeded('ManualApproval'),
           or(
-            eq(dependencies.TerraformPlan.outputs['TerraformPlan.terraformHasChanges'], 'true'),
-            eq(dependencies.TerraformPlan.outputs['CheckStoragePlans.storageHasPlans'], 'false')
+          eq(dependencies.TerraformPlan.outputs['TerraformPlan.terraformHasChanges'], 'true'),
+          eq(dependencies.TerraformPlan.outputs['CheckStoragePlans.storageHasPlans'], 'false')
           )
           )
         steps:
