@@ -81,7 +81,7 @@ stages:
               inlineScript: |
                 mkdir -p tfplan
                 terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
-                terraform import azurerm_key_vault_secret.postgres_password \
+                terraform import azurerm_key_vault_secret.app_secrets \
                 "https://my-todo-app-prod-kv.vault.azure.net/secrets/POSTGRES-PASSWORD"
                 terraform state list
                 set +e
