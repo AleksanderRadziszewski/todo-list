@@ -81,7 +81,6 @@ stages:
               inlineScript: |
                 mkdir -p tfplan
                 terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
-                terraform state list
                 set +e
 
                 if [ "${{ parameters.action }}" = "destroy" ]; then
