@@ -152,9 +152,9 @@ stages:
         displayName: Production Approval
         dependsOn:
           - TerraformPlan
-        condition: and (
-          eq('${{ parameters.environment }}', 'prod'),
-          eq(dependencies.TerraformPlan.outputs['TerraformPlan.terraformHasChanges'], 'true')
+        condition: or (
+          and(eq('${{ parameters.environment }}', 'prod'), eq(dependencies.TerraformPlan.outputs['TerraformPlan.terraformHasChanges'], 'true')),
+          and(eq('${{ parameters.environment }}', 'prod'), eq(dependencies.TerraformPlan.outputs['CheckStoragePlans.storageHasPlans'], 'false'))
           )
         pool: server
 
@@ -178,8 +178,8 @@ stages:
           in('${{ parameters.action }}', 'apply', 'destroy'),
           succeeded('ManualApproval'),
           or(
-          eq(dependencies.TerraformPlan.outputs['TerraformPlan.terraformHasChanges'], 'true'),
-          eq(dependencies.TerraformPlan.outputs['CheckStoragePlans.storageHasPlans'], 'false')
+            eq(dependencies.TerraformPlan.outputs['TerraformPlan.terraformHasChanges'], 'true'),
+            eq(dependencies.TerraformPlan.outputs['CheckStoragePlans.storageHasPlans'], 'false')
           )
           )
         steps:
@@ -227,7 +227,7 @@ stages:
                 MINUTES=$((DURATION / 60))
                 SECONDS=$((DURATION % 60))
 
-                 echo "##[section]Terraform apply completed in ${MINUTES}m ${SECONDS}s"
+                echo "##[section]Terraform apply completed in ${MINUTES}m ${SECONDS}s"
               workingDirectory: $(System.DefaultWorkingDirectory)/infra
             env:
               ARM_SUBSCRIPTION_ID: $(subscription_id)
