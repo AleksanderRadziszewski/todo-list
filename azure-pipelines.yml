@@ -120,6 +120,31 @@ stages:
               TF_VAR_postgres_port: $(POSTGRES_PORT)
               TF_VAR_postgres_db: $(POSTGRES_DB)
 
+          - task: AzureCLI@2
+            name: CheckStoragePlans
+            displayName: Check if plans exist in Storage Account
+            inputs:
+              azureSubscription: "todo-app-service-connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                PLAN_COUNT=$(az storage blob list \
+                  --account-name tfstatetodoapp \
+                  --container-name plans \
+                  --auth-mode login \
+                  --query "length(@)" \
+                  -o tsv)
+
+                echo "Found $PLAN_COUNT existing plan files in Storage Account."
+
+                if [ "$PLAN_COUNT" -eq 0 ]; then
+                  echo "No plans found in Storage Account."
+                  echo "##vso[task.setvariable variable=storageHasPlans;isOutput=true]false"
+                else
+                  echo "Plans already exist in Storage Account."
+                  echo "##vso[task.setvariable variable=storageHasPlans;isOutput=true]true"
+                fi
+
           - publish: $(System.DefaultWorkingDirectory)/infra/tfplan
             artifact: tfplan
 
@@ -127,7 +152,7 @@ stages:
         displayName: Production Approval
         dependsOn:
           - TerraformPlan
-        condition: and(
+        condition: and (
           eq('${{ parameters.environment }}', 'prod'),
           eq(dependencies.TerraformPlan.outputs['TerraformPlan.terraformHasChanges'], 'true')
           )
@@ -149,12 +174,12 @@ stages:
         dependsOn:
           - TerraformPlan
           - ManualApproval
-        condition: or(
+        condition: and(
           in('${{ parameters.action }}', 'apply', 'destroy'),
-          eq(dependencies.TerraformPlan.outputs['TerraformInitPlan.terraformHasChanges'], 'true'),
+          succeeded('ManualApproval'),
           or(
-          ne('${{ parameters.environment }}', 'prod'),
-          succeeded('ManualApproval')
+          eq(dependencies.TerraformPlan.outputs['TerraformPlan.terraformHasChanges'], 'true'),
+          eq(dependencies.TerraformPlan.outputs['CheckStoragePlans.storageHasPlans'], 'false')
           )
           )
         steps:
