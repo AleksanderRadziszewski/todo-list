@@ -72,6 +72,7 @@ stages:
             displayName: Install Terraform
 
           - task: AzureCLI@2
+            name: TerraformPlan
             displayName: Terraform Init & Plan
             inputs:
               azureSubscription: "todo-app-service-connection"
