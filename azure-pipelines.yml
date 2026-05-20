@@ -273,14 +273,27 @@ stages:
         variables:
           SWA_DEPLOYMENT_TOKEN: $[ dependencies.GetSWADeploymentToken.outputs['GetToken.SWA_DEPLOYMENT_TOKEN'] ]
         steps:
+          - checkout: self
+
           - download: current
             artifact: frontend-dist
 
           - script: |
               echo "Pipeline.Workspace = $(Pipeline.Workspace)"
+              echo "Working directory = $(System.DefaultWorkingDirectory)"
               echo "Contents of workspace:"
               find "$(Pipeline.Workspace)" -maxdepth 3 -type f | sort
             displayName: Show Artifact Contents
+
+          - script: |
+              rm -rf "$(System.DefaultWorkingDirectory)/frontend-dist"
+              mkdir -p "$(System.DefaultWorkingDirectory)/frontend-dist"
+              cp -R "$(Pipeline.Workspace)/frontend-dist/." \
+                    "$(System.DefaultWorkingDirectory)/frontend-dist/"
+
+              echo "Copied files:"
+              find "$(System.DefaultWorkingDirectory)/frontend-dist" -maxdepth 3 -type f | sort
+            displayName: Copy Artifact to Working Directory
 
           - task: AzureStaticWebApp@0
             displayName: Deploy to Azure Static Web Apps
