@@ -245,6 +245,7 @@ stages:
         dependsOn: UploadPlanAndTerraformApply
         steps:
           - task: AzureCLI@2
+            name: GetToken
             displayName: Get SWA Deployment Token
             inputs:
               azureSubscription: "todo-app-service-connection"
@@ -254,8 +255,25 @@ stages:
                 SWA_DEPLOYMENT_TOKEN=$(az staticwebapp secrets list \
                   --name todo-app-${{ parameters.environment }}-frontend-static \
                   --resource-group rg-todo-app-${{ parameters.environment }} \
-                  --query "properties.apiKey" -o tsv)
+                  --query "properties.apiKey" \
+                  -o tsv)
 
-                echo "##vso[task.setvariable variable=SWA_DEPLOYMENT_TOKEN;issecret=true]$SWA_DEPLOYMENT_TOKEN"
+                echo "##vso[task.setvariable variable=SWA_DEPLOYMENT_TOKEN;isOutput=true;issecret=true]$SWA_DEPLOYMENT_TOKEN"
             env:
               ARM_SUBSCRIPTION_ID: $(subscription_id)
+
+      - job: DeployFrontend
+        displayName: Deploy Frontend to Azure Static Web Apps
+        dependsOn: GetSWADeploymentToken
+        variables:
+          SWA_DEPLOYMENT_TOKEN: $[ dependencies.GetSWADeploymentToken.outputs['GetToken.SWA_DEPLOYMENT_TOKEN'] ]
+        steps:
+          - checkout: self
+
+          - task: AzureStaticWebApp@0
+            displayName: Deploy Azure Static Web App (${{ parameters.environment }})
+            inputs:
+              app_location: "/frontend"
+              output_location: "/dist"
+              skip_app_build: true
+              azure_static_web_apps_api_token: $(SWA_DEPLOYMENT_TOKEN)
