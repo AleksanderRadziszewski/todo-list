@@ -275,5 +275,4 @@ stages:
             inputs:
               app_location: "/frontend"
               output_location: "/dist"
-              skip_app_build: true
               azure_static_web_apps_api_token: $(SWA_DEPLOYMENT_TOKEN)
