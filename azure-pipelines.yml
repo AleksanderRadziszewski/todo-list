@@ -279,9 +279,10 @@ stages:
             artifact: frontend-dist
 
           - script: |
-              echo "Pipeline workspace: $(Pipeline.Workspace)"
-              find "$(Pipeline.Workspace)/frontend-dist" -maxdepth 2 -type f | sort
-            displayName: Show Frontend Artifact Contents
+              echo "Pipeline.Workspace = $(Pipeline.Workspace)"
+              echo "Contents of workspace:"
+              find "$(Pipeline.Workspace)" -maxdepth 3 -type f | sort
+            displayName: Show Artifact Contents
 
           - task: AzureStaticWebApp@0
             displayName: Deploy to Azure Static Web Apps
