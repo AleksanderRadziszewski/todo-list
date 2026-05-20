@@ -82,7 +82,7 @@ stages:
                 mkdir -p tfplan
                 terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
                 terraform import azurerm_key_vault_secret.postgres_password \
-                "https://my-todo-app-prod-kv.vault.azure.net/secrets/POSTGRES-PASSWORD"
+                "https://my-todo-app-prod-kv.vault.azure.net/secrets/POSTGRES-PASSWORD/62326db1c4c44f65a02c409f8528b9db"
                 terraform state list
                 set +e
                 if [ "${{ parameters.action }}" = "destroy" ]; then
