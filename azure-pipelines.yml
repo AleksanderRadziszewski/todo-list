@@ -275,6 +275,7 @@ stages:
         steps:
           - download: current
             artifact: frontend-dist
+            path: $(Pipeline.Workspace)
 
           - script: |
               echo "Pipeline.Workspace = $(Pipeline.Workspace)"
@@ -286,6 +287,6 @@ stages:
             displayName: Deploy to Azure Static Web Apps
             inputs:
               azure_static_web_apps_api_token: $(SWA_DEPLOYMENT_TOKEN)
-              app_location: "$(Pipeline.Workspace)/frontend-dist"
+              app_location: "frontend-dist"
               output_location: ""
               skip_app_build: true
