@@ -101,6 +101,7 @@ stages:
                   terraform plan \
                     -out=tfplan/tfplan-$(Build.BuildId).bin \
                     -detailed-exitcode
+                terraform show tfplan/tfplan-$(Build.BuildId).bin > tfplan/tfplan.txt
                 fi
 
                 EXIT_CODE=$?
@@ -114,7 +115,6 @@ stages:
                   echo "##vso[task.setvariable variable=terraformHasChanges;isOutput=true]false"
                 elif [ $EXIT_CODE -eq 2 ]; then
                   echo "Infrastructure changes detected."
-                  terraform show tfplan/tfplan-$(Build.BuildId).bin > tfplan/tfplan.txt
                   echo "##vso[task.setvariable variable=terraformHasChanges;isOutput=true]true"
                 fi
               workingDirectory: $(System.DefaultWorkingDirectory)/infra
