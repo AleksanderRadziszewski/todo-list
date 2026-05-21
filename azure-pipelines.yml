@@ -86,7 +86,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                mkdir -p tfplan/${{ parameters.environment }}
+                mkdir -p tfplan/${{ parameters.environment }}/
                 terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
                 terraform state list
                 set +e
@@ -101,7 +101,7 @@ stages:
                   terraform plan \
                     -out=tfplan/${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId).bin \
                     -detailed-exitcode
-                terraform show tfplan/tfplan-$(Build.BuildId).bin > tfplan/tfplan.txt
+                terraform show tfplan/${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId).bin > tfplan/${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId).txt
                 fi
 
                 EXIT_CODE=$?
@@ -228,7 +228,7 @@ stages:
                 terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
 
                 START_TIME=$(date +%s)
-                terraform apply -auto-approve $(Pipeline.Workspace)/tfplan/tfplan-$(Build.BuildId).bin
+                terraform apply -auto-approve $(Pipeline.Workspace)/tfplan/${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId).bin
 
                 END_TIME=$(date +%s)
                 DURATION=$((END_TIME - START_TIME))
