@@ -188,6 +188,7 @@ stages:
           - ManualApproval
         condition: or(
           succeeded('ManualApproval'),
+          eq('${{ parameters.environment }}', 'dev'),
           eq(dependencies.TerraformPlan.outputs['TerraformPlan.terraformHasChanges'], 'true'),
           eq(dependencies.TerraformPlan.outputs['CheckStoragePlans.storageHasPlans'], 'false')
           )
