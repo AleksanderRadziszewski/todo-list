@@ -86,7 +86,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                mkdir -p tfplan
+                mkdir -p tfplan/${{ parameters.environment }}
                 terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
                 terraform state list
                 set +e
@@ -94,12 +94,12 @@ stages:
                   echo "Creating DESTROY plan..."
                   terraform plan \
                     -destroy \
-                    -out=tfplan/tfplan-$(Build.BuildId).bin \
+                    -out=tfplan/${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId).bin \
                     -detailed-exitcode
                 else
                   echo "Creating APPLY plan..."
                   terraform plan \
-                    -out=tfplan/tfplan-$(Build.BuildId).bin \
+                    -out=tfplan/${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId).bin \
                     -detailed-exitcode
                 terraform show tfplan/tfplan-$(Build.BuildId).bin > tfplan/tfplan.txt
                 fi
@@ -165,12 +165,11 @@ stages:
           eq('${{ parameters.environment }}', 'prod'),
           or(
           eq('${{ parameters.action }}', 'destroy'),
-          eq(dependencies.TerraformPlan.outputs['TerraformPlan.terraformHasChanges'], 'true'),
-          eq(dependencies.TerraformPlan.outputs['CheckStoragePlans.storageHasPlans'], 'false')
+          eq(dependencies.TerraformPlan.outputs['CheckStoragePlans.storageHasPlans'], 'false'),
+          eq(dependencies.TerraformPlan.outputs['TerraformPlan.terraformHasChanges'], 'true')
           )
           )
         pool: server
-
         steps:
           - task: ManualValidation@0
             timeoutInMinutes: 1440
@@ -187,13 +186,10 @@ stages:
         dependsOn:
           - TerraformPlan
           - ManualApproval
-        condition: and(
-          in('${{ parameters.action }}', 'apply', 'destroy'),
+        condition: or(
           succeeded('ManualApproval'),
-          or(
           eq(dependencies.TerraformPlan.outputs['TerraformPlan.terraformHasChanges'], 'true'),
           eq(dependencies.TerraformPlan.outputs['CheckStoragePlans.storageHasPlans'], 'false')
-          )
           )
         steps:
           - checkout: self
@@ -280,7 +276,6 @@ stages:
 
           - script: |
               echo "Pipeline.Workspace = $(Pipeline.Workspace)"
-              echo "Working directory = $(System.DefaultWorkingDirectory)"
               echo "Contents of workspace:"
               find "$(Pipeline.Workspace)" -maxdepth 3 -type f | sort
             displayName: Show Artifact Contents
