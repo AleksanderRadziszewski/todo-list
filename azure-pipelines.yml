@@ -203,6 +203,27 @@ stages:
             displayName: Install Terraform
 
           - task: AzureCLI@2
+            displayName: Terraform Plan
+            inputs:
+              azureSubscription: "todo-app-service-connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                PLAN_DIR="$(Pipeline.Workspace)/tfplan/${{ parameters.environment }}"
+                PLAN_FILE="$PLAN_DIR/tfplan-${{ parameters.environment }}-$(Build.BuildId)"
+
+                mkdir -p "$PLAN_DIR"
+
+                terraform init -reconfigure \
+                  -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
+
+                terraform plan -out="$PLAN_FILE"
+
+                echo "Created plan:"
+                ls -la "$PLAN_DIR"
+              workingDirectory: $(System.DefaultWorkingDirectory)/infra
+
+          - task: AzureCLI@2
             displayName: Upload Terraform plan
             inputs:
               azureSubscription: "todo-app-service-connection"
