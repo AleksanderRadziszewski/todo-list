@@ -94,14 +94,14 @@ stages:
                   echo "Creating DESTROY plan..."
                   terraform plan \
                     -destroy \
-                    -out=tfplan/${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId).bin \
+                    -out=tfplan/${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId) \
                     -detailed-exitcode
                 else
                   echo "Creating APPLY plan..."
                   terraform plan \
-                    -out=tfplan/${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId).bin \
+                    -out=tfplan/${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId) \
                     -detailed-exitcode
-                terraform show tfplan/${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId).bin > tfplan/${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId).txt
+                terraform show tfplan/${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId)
                 fi
 
                 EXIT_CODE=$?
@@ -195,9 +195,6 @@ stages:
         steps:
           - checkout: self
 
-          - download: current
-            artifact: tfplan
-
           - script: |
               TERRAFORM_VERSION="1.14.4"
               curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
@@ -220,16 +217,42 @@ stages:
                   --auth-mode login
 
           - task: AzureCLI@2
+            displayName: Download Terraform plan
+            inputs:
+              azureSubscription: "todo-app-service-connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                mkdir -p $(Pipeline.Workspace)/tfplan/${{ parameters.environment }}
+
+                az storage blob download \
+                  --account-name tfstatetodoapp \
+                  --container-name plans \
+                  --name ${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId) \
+                  --file $(Pipeline.Workspace)/tfplan/${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId) \
+                  --auth-mode login
+
+
+          - task: AzureCLI@2
             displayName: Apply Terraform
             inputs:
               azureSubscription: "todo-app-service-connection"
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
+                terraform init -reconfigure \
+                  -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
+
+                PLAN_FILE="$(Pipeline.Workspace)/tfplan/${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId)"
+
+                if [ ! -f "$PLAN_FILE" ]; then
+                  echo "Terraform plan file not found!"
+                  exit 1
+                fi
 
                 START_TIME=$(date +%s)
-                terraform apply -auto-approve $(Pipeline.Workspace)/tfplan/${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId).bin
+
+                terraform apply -auto-approve "$PLAN_FILE"
 
                 END_TIME=$(date +%s)
                 DURATION=$((END_TIME - START_TIME))
