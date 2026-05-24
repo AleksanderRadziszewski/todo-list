@@ -275,7 +275,7 @@ stages:
                   eq('${{ parameters.environment }}', 'prod'),
                   succeeded('ManualApproval')
                 )
-                )
+              )
             inputs:
               azureSubscription: "todo-app-service-connection"
               scriptType: bash
