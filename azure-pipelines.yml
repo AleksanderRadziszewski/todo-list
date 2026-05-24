@@ -203,16 +203,19 @@ stages:
             displayName: Install Terraform
 
           - task: AzureCLI@2
-            displayName: Upload plan files
+            displayName: Upload Terraform plan
             inputs:
               azureSubscription: "todo-app-service-connection"
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                az storage blob upload-batch \
+                PLAN_FILE="$(Pipeline.Workspace)/tfplan/${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId)"
+
+                az storage blob upload \
                   --account-name tfstatetodoapp \
-                  --destination plans \
-                  --source $(Pipeline.Workspace)/tfplan \
+                  --container-name plans \
+                  --name ${{ parameters.environment }}/tfplan-${{ parameters.environment }}-$(Build.BuildId) \
+                  --file "$PLAN_FILE" \
                   --overwrite true \
                   --auth-mode login
 
