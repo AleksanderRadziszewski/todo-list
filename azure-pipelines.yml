@@ -70,74 +70,13 @@ stages:
         displayName: Terraform Plan
         steps:
           - checkout: self
+
           - script: |
               TERRAFORM_VERSION="1.14.4"
               curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
               unzip terraform.zip
               sudo mv terraform /usr/local/bin/terraform
-              terraform -version
             displayName: Install Terraform
-
-          - task: AzureCLI@2
-            name: TerraformPlan
-            displayName: Terraform Init & Plan
-            inputs:
-              azureSubscription: "todo-app-service-connection"
-              scriptType: bash
-              scriptLocation: inlineScript
-              inlineScript: |
-
-                PLAN_DIR="$(Pipeline.Workspace)/tfplan/${{ parameters.environment }}"
-                PLAN_FILE="$PLAN_DIR/tfplan-${{ parameters.environment }}-$(Build.BuildId)"
-
-                mkdir -p "$PLAN_DIR"
-
-                terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
-
-                terraform plan -out="$PLAN_FILE"
-
-                echo "Created plan:"
-                ls -la "$PLAN_DIR"
-
-                set +e
-                if [ "${{ parameters.action }}" = "destroy" ]; then
-                  echo "Creating DESTROY plan..."
-                  terraform plan \
-                    -destroy \
-                    -out= "$PLAN_FILE" \
-                    -detailed-exitcode
-                else
-                  echo "Creating APPLY plan..."
-                  terraform plan \
-                    -out="$PLAN_FILE" \
-                    -detailed-exitcode
-                fi
-
-                EXIT_CODE=$?
-                terraform show $PLAN_FILE
-
-                set -e
-
-                if [ $EXIT_CODE -eq 1 ]; then
-                  echo "Terraform plan failed."
-                  exit 1
-                elif [ $EXIT_CODE -eq 0 ]; then
-                  echo "No infrastructure changes detected."
-                  echo "##vso[task.setvariable variable=terraformHasChanges;isOutput=true]false"
-                elif [ $EXIT_CODE -eq 2 ]; then
-                  echo "Infrastructure changes detected."
-                  echo "##vso[task.setvariable variable=terraformHasChanges;isOutput=true]true"
-                fi
-              workingDirectory: $(System.DefaultWorkingDirectory)/infra
-            env:
-              ARM_SUBSCRIPTION_ID: $(subscription_id)
-              TF_VAR_environment: ${{ parameters.environment }}
-              TF_VAR_administrator_login: $(POSTGRES_USER)
-              TF_VAR_subscription_id: $(subscription_id)
-              TF_VAR_dockerhub_username: $(DOCKERHUB-USER)
-              TF_VAR_postgres_user: $(POSTGRES_USER)
-              TF_VAR_postgres_port: $(POSTGRES_PORT)
-              TF_VAR_postgres_db: $(POSTGRES_DB)
 
           - task: AzureCLI@2
             name: CheckStoragePlans
@@ -165,6 +104,60 @@ stages:
                   echo "##vso[task.setvariable variable=storageHasPlans;isOutput=true]true"
                 fi
 
+          - task: AzureCLI@2
+            displayName: Terraform Plan
+            inputs:
+              azureSubscription: "todo-app-service-connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+
+                PLAN_DIR="$(Pipeline.Workspace)/tfplan/${{ parameters.environment }}"
+                PLAN_FILE="$PLAN_DIR/tfplan-${{ parameters.environment }}-$(Build.BuildId)"
+
+                mkdir -p "$PLAN_DIR"
+
+                terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
+
+                terraform plan -out="$PLAN_FILE"
+
+                echo "Created plan:"
+                ls -la "$PLAN_DIR"
+
+                set +e
+                if [ "${{ parameters.action }}" = "destroy" ]; then
+                  echo "Creating DESTROY plan..."
+                  terraform plan \
+                    -destroy \
+                    -out="$PLAN_FILE" \
+                    -detailed-exitcode
+                else
+                  echo "Creating APPLY plan..."
+                  terraform plan \
+                    -out="$PLAN_FILE" \
+                    -detailed-exitcode
+                fi
+
+                EXIT_CODE=$?
+                terraform show $PLAN_FILE
+
+                set -e
+
+                if [ $EXIT_CODE -eq 1 ]; then
+                  echo "Terraform plan failed."
+                  exit 1
+                elif [ $EXIT_CODE -eq 0 ]; then
+                  echo "No infrastructure changes detected."
+                  echo "##vso[task.setvariable variable=terraformHasChanges;isOutput=true]false"
+                elif [ $EXIT_CODE -eq 2 ]; then
+                  echo "Infrastructure changes detected."
+                  echo "##vso[task.setvariable variable=terraformHasChanges;isOutput=true]true"
+                fi
+
+                echo "Created plan:"
+                ls -la "$PLAN_DIR"
+              workingDirectory: $(System.DefaultWorkingDirectory)/infra
+
       - job: ManualApproval
         displayName: Production Approval
         dependsOn:
@@ -191,15 +184,17 @@ stages:
               onTimeout: reject
 
       - job: UploadPlanAndTerraformApply
-        displayName: Terraform Apply
+        displayName: Upload and Apply Terraform Plan
         dependsOn:
           - TerraformPlan
           - ManualApproval
-        condition: or(
-          succeeded('ManualApproval'),
-          eq('${{ parameters.environment }}', 'dev'),
-          eq(dependencies.TerraformPlan.outputs['TerraformPlan.terraformHasChanges'], 'true'),
-          eq(dependencies.TerraformPlan.outputs['CheckStoragePlans.storageHasPlans'], 'false')
+        condition: |
+          or(
+            eq('${{ parameters.environment }}', 'dev'),
+            and(
+              eq('${{ parameters.environment }}', 'prod'),
+              eq(dependencies.ManualApproval.result, 'Succeeded')
+            )
           )
         steps:
           - checkout: self
@@ -212,35 +207,7 @@ stages:
             displayName: Install Terraform
 
           - task: AzureCLI@2
-            displayName: Terraform Plan
-            inputs:
-              azureSubscription: "todo-app-service-connection"
-              scriptType: bash
-              scriptLocation: inlineScript
-              inlineScript: |
-                PLAN_DIR="$(Pipeline.Workspace)/tfplan/${{ parameters.environment }}"
-                PLAN_FILE="$PLAN_DIR/tfplan-${{ parameters.environment }}-$(Build.BuildId)"
-
-                mkdir -p "$PLAN_DIR"
-
-                terraform init -reconfigure \
-                  -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
-
-                terraform plan -out="$PLAN_FILE"
-
-                echo "Created plan:"
-                ls -la "$PLAN_DIR"
-              workingDirectory: $(System.DefaultWorkingDirectory)/infra
-
-          - task: AzureCLI@2
-            displayName: Upload and ApplyTerraform plan
-            condition: or(
-              eq('${{ parameters.environment }}', 'dev'),
-              and(
-              eq('${{ parameters.environment }}', 'prod'),
-              eq(dependencies.ManualApproval.result, 'Succeeded')
-              )
-              )
+            displayName: Upload Terraform plan
             inputs:
               azureSubscription: "todo-app-service-connection"
               scriptType: bash
