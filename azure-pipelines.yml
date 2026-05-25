@@ -267,13 +267,7 @@ stages:
 
           - task: AzureCLI@2
             displayName: Apply Terraform
-            condition: or(
-              eq('${{ parameters.environment }}', 'dev'),
-              and(
-              eq('${{ parameters.environment }}', 'prod'),
-              succeeded('ManualApproval')
-              )
-              )
+            condition: or(eq('${{ parameters.environment }}', 'dev'), and(eq('${{ parameters.environment }}', 'prod'), succeeded('ManualApproval')))
             inputs:
               azureSubscription: "todo-app-service-connection"
               scriptType: bash
