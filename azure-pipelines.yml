@@ -157,6 +157,15 @@ stages:
                 echo "Created plan:"
                 ls -la "$PLAN_DIR"
               workingDirectory: $(System.DefaultWorkingDirectory)/infra
+            env:
+              ARM_SUBSCRIPTION_ID: $(subscription_id)
+              TF_VAR_environment: ${{ parameters.environment }}
+              TF_VAR_administrator_login: $(POSTGRES_USER)
+              TF_VAR_subscription_id: $(subscription_id)
+              TF_VAR_dockerhub_username: $(DOCKERHUB-USER)
+              TF_VAR_postgres_user: $(POSTGRES_USER)
+              TF_VAR_postgres_port: $(POSTGRES_PORT)
+              TF_VAR_postgres_db: $(POSTGRES_DB)
 
       - job: ManualApproval
         displayName: Production Approval
