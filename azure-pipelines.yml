@@ -120,7 +120,8 @@ stages:
 
                 mkdir -p "$PLAN_DIR"
 
-                terraform init -reconfigure -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
+                terraform init -reconfigure \
+                 -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
 
                 terraform plan -out="$PLAN_FILE"
 
@@ -238,7 +239,8 @@ stages:
 
                 mkdir -p "$(Pipeline.Workspace)/tfplan/${{ parameters.environment }}"
 
-                terraform init
+                terraform init -reconfigure \
+                  -backend-config=environments/${{ parameters.environment }}/${{ parameters.environment }}.tfbackend
 
                 terraform plan -out="$PLAN_FILE"
 
