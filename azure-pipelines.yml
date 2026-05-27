@@ -351,7 +351,7 @@ stages:
               ARM_SUBSCRIPTION_ID: $(subscription_id)
 
           - script: |
-              echo "TOKEN=$(SWA_DEPLOYMENT_TOKEN)"
+              echo "TOKEN=$(GetToken.SWA_DEPLOYMENT_TOKEN)"
             displayName: Debug Token
 
       - job: DeployFrontend
