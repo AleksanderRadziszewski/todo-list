@@ -350,10 +350,6 @@ stages:
             env:
               ARM_SUBSCRIPTION_ID: $(subscription_id)
 
-          - script: |
-              echo "TOKEN=$(GetToken.SWA_DEPLOYMENT_TOKEN)"
-            displayName: Debug Token
-
       - job: DeployFrontend
         displayName: Deploy Frontend to Azure Static Web Apps
         dependsOn: GetSWADeploymentToken
@@ -365,10 +361,6 @@ stages:
 
           - download: current
             artifact: frontend-dist
-
-          - script: |
-              echo "TOKEN=$(SWA_DEPLOYMENT_TOKEN)"
-            displayName: Debug Imported Token
 
           - script: |
               echo "Pipeline.Workspace = $(Pipeline.Workspace)"
