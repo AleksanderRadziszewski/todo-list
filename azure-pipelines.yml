@@ -351,6 +351,7 @@ stages:
       - job: DeployFrontend
         displayName: Deploy Frontend to Azure Static Web Apps
         dependsOn: GetSWADeploymentToken
+        condition: succeededOrFailed()
         variables:
           SWA_DEPLOYMENT_TOKEN: $[ dependencies.GetSWADeploymentToken.outputs['GetToken.SWA_DEPLOYMENT_TOKEN'] ]
         steps:
