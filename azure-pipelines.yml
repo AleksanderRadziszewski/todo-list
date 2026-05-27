@@ -208,16 +208,19 @@ stages:
         displayName: Upload and Apply Terraform Plan
         variables:
           PLAN_FILE: $[ dependencies.TerraformPlan.outputs['SetPlanFile.PLAN_FILE'] ]
-        dependsOn:
+        # Conditionally require ManualApproval only for prod. Azure DevOps does not allow
+        # a template expression as a direct property name, so we set dependsOn using a
+        # single expression that evaluates to the appropriate array.
+        dependsOn: ${{ if eq(parameters.environment, 'prod') }}
           - TerraformPlan
           - ManualApproval
+          ${{ else }}
+          - TerraformPlan
+          ${{ end }}
         condition: |
           or(
-            eq('${{ parameters.environment }}', 'dev'),
-            and(
-              eq('${{ parameters.environment }}', 'prod'),
-              eq(dependencies.ManualApproval.result, 'Succeeded')
-            )
+            in('${{ parameters.action }}', 'apply', 'destroy'),
+            eq(dependencies.TerraformPlan.outputs['TerraformPlan.terraformHasChanges'], 'true')
           )
         steps:
           - checkout: self
@@ -324,6 +327,11 @@ stages:
       - job: GetSWADeploymentToken
         displayName: Get SWA Deployment Token
         dependsOn: UploadPlanAndTerraformApply
+        condition: |
+          or(
+            eq('${{ parameters.environment }}', 'dev'),
+            succeeded()
+          )
         steps:
           - task: AzureCLI@2
             name: GetToken
