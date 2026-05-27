@@ -230,6 +230,7 @@ stages:
             displayName: Install Terraform
 
           - task: AzureCLI@2
+            timeoutInMinutes: 8
             displayName: Recreate Terraform Plan
             inputs:
               azureSubscription: "todo-app-service-connection"
