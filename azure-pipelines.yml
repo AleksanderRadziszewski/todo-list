@@ -345,8 +345,13 @@ stages:
                   -o tsv)
 
                 echo "##vso[task.setvariable variable=SWA_DEPLOYMENT_TOKEN;isOutput=true;issecret=true]$SWA_DEPLOYMENT_TOKEN"
+
             env:
               ARM_SUBSCRIPTION_ID: $(subscription_id)
+
+          - script: |
+              echo "Token exists"
+            displayName: Debug Token
 
       - job: DeployFrontend
         displayName: Deploy Frontend to Azure Static Web Apps
@@ -359,6 +364,10 @@ stages:
 
           - download: current
             artifact: frontend-dist
+
+          - script: |
+              echo "TOKEN=$(SWA_DEPLOYMENT_TOKEN)"
+            displayName: Debug Imported Token
 
           - script: |
               echo "Pipeline.Workspace = $(Pipeline.Workspace)"
