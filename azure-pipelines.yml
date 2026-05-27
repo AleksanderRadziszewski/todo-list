@@ -208,19 +208,16 @@ stages:
         displayName: Upload and Apply Terraform Plan
         variables:
           PLAN_FILE: $[ dependencies.TerraformPlan.outputs['SetPlanFile.PLAN_FILE'] ]
-        # Conditionally require ManualApproval only for prod. Azure DevOps does not allow
-        # a template expression as a direct property name, so we set dependsOn using a
-        # single expression that evaluates to the appropriate array.
-        dependsOn: ${{ if eq(parameters.environment, 'prod') }}
+        dependsOn:
           - TerraformPlan
           - ManualApproval
-          ${{ else }}
-          - TerraformPlan
-          ${{ end }}
         condition: |
-          or(
-            in('${{ parameters.action }}', 'apply', 'destroy'),
-            eq(dependencies.TerraformPlan.outputs['TerraformPlan.terraformHasChanges'], 'true')
+          and(
+            succeeded('TerraformPlan'),
+            or(
+              eq('${{ parameters.environment }}', 'dev'),
+              succeeded('ManualApproval')
+            )
           )
         steps:
           - checkout: self
