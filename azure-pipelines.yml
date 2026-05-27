@@ -340,8 +340,8 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 SWA_DEPLOYMENT_TOKEN=$(az staticwebapp secrets list \
-                  --name todo-app-${{ parameters.environment }}-frontend-static \
-                  --resource-group rg-todo-app-${{ parameters.environment }} \
+                  --name todo-app-dev-frontend-static \
+                  --resource-group rg-todo-app-dev \
                   --query "properties.apiKey" \
                   -o tsv)
 
