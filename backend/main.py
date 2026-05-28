@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import router as tasks_router
+from azure.monitor.opentelemetry import configure_azure_monitor
+
+configure_azure_monitor(
+    connection_string=os.environ["APPLICATIONINSIGHTS_CONNECTION_STRING"]
+)
 
 app = FastAPI()
 
@@ -13,6 +18,7 @@ app.add_middleware(
 )
 
 app.include_router(tasks_router)
+
 
 @app.get("/")
 def read_root() -> dict:
