@@ -20,11 +20,11 @@ resource "azurerm_linux_web_app" "todo_app_as" {
     }
   }
   app_settings = {
-    POSTGRES_HOST     = azurerm_postgresql_flexible_server.todo_app_server_db.fqdn
-    POSTGRES_USER     = var.postgres_user
-    POSTGRES_PASSWORD = azurerm_key_vault_secret.postgres_password.value
-    POSTGRES_DB       = var.postgres_db
-    POSTGRES_PORT     = var.postgres_port
+    POSTGRES_HOST                         = azurerm_postgresql_flexible_server.todo_app_server_db.fqdn
+    POSTGRES_USER                         = var.postgres_user
+    POSTGRES_PASSWORD                     = azurerm_key_vault_secret.postgres_password.value
+    POSTGRES_DB                           = var.postgres_db
+    POSTGRES_PORT                         = var.postgres_port
     APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.appinsights.connection_string
   }
   identity {
@@ -58,6 +58,6 @@ resource "azurerm_role_assignment" "todo_app_kv_secrets_rbac" {
 resource "azurerm_application_insights" "appinsights" {
   name                = "appi-todo-app-${var.environment}"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.rg_todo_app.name
   application_type    = "web"
 }
