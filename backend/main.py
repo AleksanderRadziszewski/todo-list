@@ -6,8 +6,6 @@ from routers import router as tasks_router
 from azure.monitor.opentelemetry import configure_azure_monitor
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
-print("AI CONNECTION:", os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"))
-
 configure_azure_monitor(
     connection_string=os.environ["APPLICATIONINSIGHTS_CONNECTION_STRING"]
 )
