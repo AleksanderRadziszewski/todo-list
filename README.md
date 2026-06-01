@@ -12,6 +12,7 @@
 [![Docker](https://img.shields.io/badge/Docker-Containerization-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![Node.js](https://img.shields.io/badge/Node.js-18.x-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![Azure DevOps](https://img.shields.io/badge/Azure_DevOps-CI/CD-0078D7?logo=azuredevops&logoColor=white)](https://azure.microsoft.com/en-us/products/devops/)
+[![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-AI_Assistant-000000?logo=githubcopilot&logoColor=white)](https://github.com/features/copilot)
 
 I wrote a pipeline for a simple, three-tier application. I used Dockerhub as a free registry and an IaC tool (Terraform) to build the infrastructure.
 
@@ -121,6 +122,133 @@ https://github.com/user-attachments/assets/438a9ccd-4fcc-49e0-aa9e-e6333c98b309
     The frontend will be running and available at: http://127.0.0.1:5173
 
 <br/>
+
+## 🧪 Testing
+
+### Backend Testing
+
+Comprehensive pytest test suite with 12 unit tests covering the FastAPI backend:
+
+#### Running Backend Tests
+
+```bash
+cd backend
+pytest test_main.py -v              # Run all tests with verbose output
+pytest test_main.py --cov           # Run tests with coverage report
+pytest test_main.py -k test_name    # Run specific test
+```
+
+#### Test Coverage
+
+- **test_main.py** - 12 tests covering:
+  - Initial app rendering and root endpoint
+  - Fetch all tasks from database
+  - Create new task (POST request)
+  - Toggle task completion status
+  - Delete task by ID
+  - Reorder tasks with position updates
+  - Update task title via PATCH request
+  - Error handling for missing tasks
+  - Database connection mocking
+  - Azure Monitor telemetry integration
+
+**All backend tests: ✅ 12/12 PASSING**
+
+#### Test Framework & Tools
+- **pytest** 7.4.4 - Test runner
+- **pytest-asyncio** - Async test support for FastAPI
+- **httpx** - TestClient for FastAPI
+- **unittest.mock** - Mocking database and external services
+
+---
+
+### Frontend Testing
+
+Comprehensive Jest test suite with 139 unit tests covering React components:
+
+#### Running Frontend Tests
+
+```bash
+cd frontend
+npm test                            # Run all tests
+npm run test:watch                  # Watch mode for development
+npm run test:coverage               # Generate coverage report
+```
+
+#### Test Coverage (100% on Core Components)
+
+| Component | Tests | Status | Coverage |
+|-----------|-------|--------|----------|
+| AddTask.tsx | 38 | ✅ | 100% |
+| AppTitle.tsx | 21 | ✅ | 100% |
+| Footer.tsx | 38 | ✅ | 100% |
+| Spinner.tsx | 38 | ✅ | 100% |
+| DeleteBtn.tsx | 32 | ✅ | 100% |
+| useDebounce.ts | 22 | ✅ | 100% |
+
+**All frontend tests: ✅ 139/139 PASSING**
+
+#### Test Details
+
+**AddTask.tsx (38 tests)**
+- Form submission and input handling
+- Enter key event handling
+- Loading state management
+- Empty input validation
+- Callback verification
+
+**AppTitle.tsx (21 tests)**
+- Component rendering
+- Title and version text
+- React.FC structure validation
+- Accessibility attributes
+
+**Footer.tsx (38 tests)**
+- SVG icon rendering
+- GitHub link functionality
+- Security attributes (target="_blank", rel="noopener noreferrer")
+- Accessibility features (aria-hidden)
+- Link URL validation
+
+**Spinner.tsx (38 tests)**
+- Size prop customization
+- Color prop variations (hex, rgb, rgba)
+- CSS styling validation
+- Edge cases (zero, negative, large values)
+- Type safety verification
+
+**DeleteBtn.tsx (32 tests)**
+- Click event handling
+- Callback invocation with correct ID
+- Button accessibility
+- DOM structure validation
+- Various ID prop values
+
+**useDebounce.ts (22 tests)**
+- Value debouncing with configurable delay
+- Default 500ms delay
+- Timer reset on value change
+- Multiple data type support (strings, numbers, objects, arrays)
+- Cleanup on component unmount
+- Edge cases (zero delay, very large delay)
+
+#### Test Framework & Tools
+- **Jest** 29.7.0 - Test runner
+- **@testing-library/react** 14.1.2 - React component testing utilities
+- **@testing-library/jest-dom** 6.1.5 - Enhanced DOM matchers
+- **ts-jest** - TypeScript transpiler for Jest
+- **identity-obj-proxy** - CSS module mocking
+
+#### Test Patterns Used
+- Unit testing with isolated components
+- Mocking callbacks with jest.fn()
+- Mock API responses for fetch calls
+- Fake timers for async testing
+- Accessibility testing
+- Edge case coverage
+- Type safety validation
+
+---
 
 <hr>
 
