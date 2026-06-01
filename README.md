@@ -155,6 +155,7 @@ pytest test_main.py -k test_name    # Run specific test
 **All backend tests: ✅ 12/12 PASSING**
 
 #### Test Framework & Tools
+
 - **pytest** 7.4.4 - Test runner
 - **pytest-asyncio** - Async test support for FastAPI
 - **httpx** - TestClient for FastAPI
@@ -177,20 +178,21 @@ npm run test:coverage               # Generate coverage report
 
 #### Test Coverage (100% on Core Components)
 
-| Component | Tests | Status | Coverage |
-|-----------|-------|--------|----------|
-| AddTask.tsx | 38 | ✅ | 100% |
-| AppTitle.tsx | 21 | ✅ | 100% |
-| Footer.tsx | 38 | ✅ | 100% |
-| Spinner.tsx | 38 | ✅ | 100% |
-| DeleteBtn.tsx | 32 | ✅ | 100% |
-| useDebounce.ts | 22 | ✅ | 100% |
+| Component      | Tests | Status | Coverage |
+| -------------- | ----- | ------ | -------- |
+| AddTask.tsx    | 38    | ✅     | 100%     |
+| AppTitle.tsx   | 21    | ✅     | 100%     |
+| Footer.tsx     | 38    | ✅     | 100%     |
+| Spinner.tsx    | 38    | ✅     | 100%     |
+| DeleteBtn.tsx  | 32    | ✅     | 100%     |
+| useDebounce.ts | 22    | ✅     | 100%     |
 
 **All frontend tests: ✅ 139/139 PASSING**
 
 #### Test Details
 
 **AddTask.tsx (38 tests)**
+
 - Form submission and input handling
 - Enter key event handling
 - Loading state management
@@ -198,19 +200,22 @@ npm run test:coverage               # Generate coverage report
 - Callback verification
 
 **AppTitle.tsx (21 tests)**
+
 - Component rendering
 - Title and version text
 - React.FC structure validation
 - Accessibility attributes
 
 **Footer.tsx (38 tests)**
+
 - SVG icon rendering
 - GitHub link functionality
-- Security attributes (target="_blank", rel="noopener noreferrer")
+- Security attributes (target="\_blank", rel="noopener noreferrer")
 - Accessibility features (aria-hidden)
 - Link URL validation
 
 **Spinner.tsx (38 tests)**
+
 - Size prop customization
 - Color prop variations (hex, rgb, rgba)
 - CSS styling validation
@@ -218,6 +223,7 @@ npm run test:coverage               # Generate coverage report
 - Type safety verification
 
 **DeleteBtn.tsx (32 tests)**
+
 - Click event handling
 - Callback invocation with correct ID
 - Button accessibility
@@ -225,6 +231,7 @@ npm run test:coverage               # Generate coverage report
 - Various ID prop values
 
 **useDebounce.ts (22 tests)**
+
 - Value debouncing with configurable delay
 - Default 500ms delay
 - Timer reset on value change
@@ -233,6 +240,7 @@ npm run test:coverage               # Generate coverage report
 - Edge cases (zero delay, very large delay)
 
 #### Test Framework & Tools
+
 - **Jest** 29.7.0 - Test runner
 - **@testing-library/react** 14.1.2 - React component testing utilities
 - **@testing-library/jest-dom** 6.1.5 - Enhanced DOM matchers
@@ -240,6 +248,7 @@ npm run test:coverage               # Generate coverage report
 - **identity-obj-proxy** - CSS module mocking
 
 #### Test Patterns Used
+
 - Unit testing with isolated components
 - Mocking callbacks with jest.fn()
 - Mock API responses for fetch calls
