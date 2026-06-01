@@ -1,7 +1,7 @@
 import React from 'react';
 import { Reorder } from 'framer-motion';
-import Task from 'src/components/task-list/task/Task';
-import 'src/components/task-list/TaskList.scss';
+import Task from './task/Task';
+import './TaskList.scss';
 
 type TaskType = {
   id: number;
@@ -31,8 +31,8 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onReorder, onToggleCompleted
           key={task.id}
           task={task}
           onToggleCompleted={onToggleCompleted}
-          onDelete={onDelete} 
-          onUpdateTitle={updateTaskTitle}          
+          onDelete={onDelete}
+          onUpdateTitle={updateTaskTitle}
         />
       ))}
     </Reorder.Group>

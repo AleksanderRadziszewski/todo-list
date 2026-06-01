@@ -3,7 +3,7 @@ import { Reorder, useDragControls, useMotionValue } from 'framer-motion';
 import "./Task.scss";
 import DeleteBtn from './delete-btn/DeleteBtn';
 import { useRaisedShadow } from './useRaisedShadow';
-import useDebounce from 'src/components/useDebounce';
+import useDebounce from '../../useDebounce';
 
 interface TaskProps {
     task: {
