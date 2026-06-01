@@ -11,7 +11,7 @@ os.environ["DATABASE_URL"] = "sqlite:///test.db"
 os.environ["APPLICATIONINSIGHTS_CONNECTION_STRING"] = "InstrumentationKey=test-key"
 os.environ["POSTGRES_HOST"] = "localhost"
 os.environ["POSTGRES_USER"] = "test_user"
-os.environ["POSTGRES_PASSWORD"] = "test_password"  
+os.environ["POSTGRES_PASSWORD"] = "test_password"
 os.environ["POSTGRES_DB"] = "test_db"
 os.environ["POSTGRES_PORT"] = "5432"
 
@@ -33,5 +33,6 @@ def setup_test_environment():
 @pytest.fixture
 def mock_env_vars(monkeypatch):
     """Mock environment variables for each test"""
-    monkeypatch.setenv("APPLICATIONINSIGHTS_CONNECTION_STRING", "InstrumentationKey=test-key-12345")
+    monkeypatch.setenv("APPLICATIONINSIGHTS_CONNECTION_STRING",
+                       "InstrumentationKey=test-key-12345")
     monkeypatch.setenv("DATABASE_URL", "sqlite:///test.db")

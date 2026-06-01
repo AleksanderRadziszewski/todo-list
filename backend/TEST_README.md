@@ -7,6 +7,7 @@ pip install -r requirements-dev.txt
 ```
 
 Lub zainstaluj pojedyncze pakiety:
+
 ```bash
 pip install pytest pytest-asyncio httpx
 ```
@@ -27,7 +28,9 @@ pytest test_main.py --cov=main --cov-report=html
 ## Struktura testów
 
 ### TestRootEndpoint
+
 Testy dla endpointa GET `/`:
+
 - `test_read_root_status_code` - Sprawdza kod HTTP 200
 - `test_read_root_response_structure` - Sprawdza strukturę odpowiedzi JSON
 - `test_read_root_message` - Sprawdza wiadomość powitania
@@ -36,24 +39,32 @@ Testy dla endpointa GET `/`:
 - `test_read_root_documentation` - Sprawdza link do dokumentacji
 
 ### TestCORSMiddleware
+
 Testy dla konfiguracji CORS:
+
 - `test_cors_headers_present` - Sprawdza obecność nagłówków CORS
 - `test_cors_allow_origin_header` - Sprawdza nagłówek Allow-Origin
 
 ### TestAppConfiguration
+
 Testy dla konfiguracji aplikacji:
+
 - `test_app_is_fastapi_instance` - Sprawdza typ aplikacji
 - `test_azure_monitor_configured` - Sprawdza konfigurację Azure Monitor
 - `test_environment_variable_used` - Sprawdza zmienne środowiskowe
 
 ### TestResponseFormat
+
 Testy dla formatu odpowiedzi:
+
 - `test_response_is_json` - Sprawdza czy odpowiedź jest JSON
 - `test_all_fields_are_strings` - Sprawdza typy danych
 - `test_endpoints_dict_values_are_strings` - Sprawdza typy słownika endpointów
 
 ### TestHTTPMethods
+
 Testy dla obsługi metod HTTP:
+
 - `test_get_method_allowed` - Sprawdza GET jest dozwolony
 - `test_post_method_not_allowed` - Sprawdza POST nie jest dozwolony
 - `test_put_method_not_allowed` - Sprawdza PUT nie jest dozwolony
@@ -62,6 +73,7 @@ Testy dla obsługi metod HTTP:
 ## Pokrycie kodu
 
 Testy pokrywają:
+
 - Inicjalizację aplikacji FastAPI
 - Konfigurację middleware CORS
 - Endpoint GET `/`
@@ -71,6 +83,7 @@ Testy pokrywają:
 ## Mocking
 
 Testy używają mockowania dla:
+
 - `azure.monitor.opentelemetry.configure_azure_monitor` - Aby uniknąć rzeczywistych połączeń
 - `FastAPIInstrumentor` - Aby izolować testy od instrumentacji
 - Zmienne środowiskowe - Przez pytest fixtures

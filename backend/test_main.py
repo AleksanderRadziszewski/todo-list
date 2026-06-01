@@ -26,7 +26,7 @@ class TestRootEndpointLogic:
             },
             "documentation": "https://github.com/e-Nicko/todo-app"
         }
-        
+
         assert response_data["message"] == "Welcome to the To-Do App API"
         assert response_data["version"] == "v0.1.2-beta"
         assert len(response_data["endpoints"]) == 4
@@ -44,7 +44,7 @@ class TestRootEndpointLogic:
             },
             "documentation": "https://github.com/e-Nicko/todo-app"
         }
-        
+
         required_fields = ["message", "version", "endpoints", "documentation"]
         for field in required_fields:
             assert field in response_data
@@ -58,8 +58,9 @@ class TestRootEndpointLogic:
             "/tasks/reorder": "Reorder tasks",
             "/tasks/{task_id}/title": "Update task title"
         }
-        
-        expected_endpoints = ["/tasks", "/tasks/{id}", "/tasks/reorder", "/tasks/{task_id}/title"]
+
+        expected_endpoints = [
+            "/tasks", "/tasks/{id}", "/tasks/reorder", "/tasks/{task_id}/title"]
         for endpoint in expected_endpoints:
             assert endpoint in endpoints
             assert isinstance(endpoints[endpoint], str)
@@ -78,7 +79,7 @@ class TestAppInitialization:
             "allow_methods": ["*"],
             "allow_headers": ["*"],
         }
-        
+
         assert cors_config["allow_origins"] == ["*"]
         assert cors_config["allow_credentials"] is True
         assert cors_config["allow_methods"] == ["*"]
@@ -92,7 +93,7 @@ class TestEnvironmentConfiguration:
         """Test that Azure Monitor connection string is expected"""
         # This test verifies the requirement for the env var
         connection_string_env = "APPLICATIONINSIGHTS_CONNECTION_STRING"
-        
+
         # The app expects this environment variable
         assert isinstance(connection_string_env, str)
         assert len(connection_string_env) > 0
@@ -100,7 +101,7 @@ class TestEnvironmentConfiguration:
     def test_application_version_format(self):
         """Test that version follows semantic versioning"""
         version = "v0.1.2-beta"
-        
+
         # Check format
         assert version.startswith("v")
         parts = version.split("-")
@@ -120,15 +121,16 @@ class TestEndpointDescriptions:
             "/tasks/reorder": "Reorder tasks",
             "/tasks/{task_id}/title": "Update task title"
         }
-        
+
         for endpoint, description in endpoints.items():
             assert description, f"Endpoint {endpoint} has empty description"
-            assert len(description) > 5, f"Description for {endpoint} is too short"
+            assert len(
+                description) > 5, f"Description for {endpoint} is too short"
 
     def test_documentation_link_valid(self):
         """Test that documentation link is valid"""
         doc_link = "https://github.com/e-Nicko/todo-app"
-        
+
         assert doc_link.startswith("https://")
         assert "github.com" in doc_link
         assert "todo-app" in doc_link
@@ -169,4 +171,3 @@ class TestResponseTypes:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
-
