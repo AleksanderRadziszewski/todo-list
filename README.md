@@ -30,7 +30,7 @@ a) localhost:5173
 
 <img src="screenshots/todo-app-v0.1.1.gif" width="100%">
 
-b) https://icy-sand-0a2899f03.1.azurestaticapps.net (run the pipeline previously)
+b) SWA default domain (run the pipeline previously)
 
 https://github.com/user-attachments/assets/438a9ccd-4fcc-49e0-aa9e-e6333c98b309
 
