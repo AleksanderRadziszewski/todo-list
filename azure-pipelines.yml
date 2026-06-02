@@ -71,23 +71,23 @@ stages:
               codeCoverageTool: Cobertura
               summaryFileLocation: backend/coverage.xml
 
-  - job: FrontendTests
-    displayName: Frontend Tests
+      - job: FrontendTests
+        displayName: Frontend Tests
 
-    steps:
-      - task: UseNode@1
-        inputs:
-          version: "18.x"
+        steps:
+          - task: UseNode@1
+            inputs:
+              version: "18.x"
 
-      - script: |
-          cd frontend
-          npm ci
-        displayName: Install Dependencies
+          - script: |
+              cd frontend
+              npm ci
+            displayName: Install Dependencies
 
-      - script: |
-          cd frontend
-          npm run test:coverage
-        displayName: Run Jest Tests
+          - script: |
+              cd frontend
+              npm run test:coverage
+            displayName: Run Jest Tests
 
   - stage: Build
     dependsOn: Test
