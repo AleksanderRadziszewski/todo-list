@@ -24,7 +24,74 @@ variables:
   - group: "todo-app-${{ parameters.environment }}-variables"
 
 stages:
+  - stage: Test
+    displayName: Run Tests
+    pool:
+      vmImage: ubuntu-latest
+
+    jobs:
+      - job: BackendTests
+        displayName: Backend Tests
+
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: "3.9"
+
+          - script: |
+              python -m pip install --upgrade pip
+
+              pip install -r backend/requirements.txt
+
+              if [ -f backend/requirements-dev.txt ]; then
+                pip install -r backend/requirements-dev.txt
+              else
+                pip install pytest pytest-asyncio httpx pytest-cov
+              fi
+
+              cd backend
+
+              pytest test_main.py \
+                -v \
+                --junitxml=test-results.xml \
+                --cov=. \
+                --cov-report=xml
+            displayName: Run Backend Tests
+
+          - task: PublishTestResults@2
+            displayName: Publish Backend Test Results
+            inputs:
+              testResultsFormat: JUnit
+              testResultsFiles: backend/test-results.xml
+              failTaskOnFailedTests: true
+
+          - task: PublishCodeCoverageResults@2
+            displayName: Publish Backend Coverage
+            inputs:
+              codeCoverageTool: Cobertura
+              summaryFileLocation: backend/coverage.xml
+
+  - job: FrontendTests
+    displayName: Frontend Tests
+
+    steps:
+      - task: UseNode@1
+        inputs:
+          version: "18.x"
+
+      - script: |
+          cd frontend
+          npm ci
+        displayName: Install Dependencies
+
+      - script: |
+          cd frontend
+          npm run test:coverage
+        displayName: Run Jest Tests
+
   - stage: Build
+    dependsOn: Test
+    condition: succeeded()
     pool:
       vmImage: "ubuntu-latest"
     jobs:
