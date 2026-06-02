@@ -325,13 +325,17 @@ See `azure-pipelines.yml` for pipeline configuration details.
 
 ### Results
 
-1. Application operations
+1. Application operations.
 
 ![swa](https://github.com/user-attachments/assets/846f364c-aa80-48ad-b49d-4839fcfecb14)
 
-2. Aplication monitoring
+2. Aplication monitoring.
 
 ![Metrics](./images/metrics.png)
+
+3. Aplication tests.
+
+![Tests](./images/tests.png)
 
 ## License
 
