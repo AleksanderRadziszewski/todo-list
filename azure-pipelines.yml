@@ -89,6 +89,20 @@ stages:
               npm run test:coverage
             displayName: Run Jest Tests
 
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: "JUnit"
+          testResultsFiles: "frontend/test-results/junit.xml"
+          failTaskOnFailedTests: true
+        displayName: Publish Test Results
+
+      - task: PublishCodeCoverageResults@2
+        inputs:
+          codeCoverageTool: "Cobertura"
+          summaryFileLocation: "frontend/coverage/cobertura-coverage.xml"
+          reportDirectory: "frontend/coverage"
+        displayName: Publish Code Coverage
+
   - stage: Build
     dependsOn: Test
     condition: succeeded()
