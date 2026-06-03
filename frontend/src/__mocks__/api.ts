@@ -173,7 +173,7 @@ export const mockFetchImplementations = {
     };
   },
 
-  reorderTasks: (apiUrl: string, tasks: ReorderPayload) => {
+  reorderTasks: (apiUrl: string, _tasks: ReorderPayload) => {
     return (url: string, init?: RequestInit) => {
       if (
         url === `https://${apiUrl}/tasks/reorder` &&
@@ -192,9 +192,9 @@ export const mockFetchImplementations = {
 
 // Helper to set up fetch mock for testing
 export function setupFetchMock(
-  implementation: (url: string, init?: RequestInit) => Promise<any>
+  implementation: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
 ) {
-  global.fetch = jest.fn(implementation);
+  global.fetch = jest.fn(implementation) as typeof fetch;
 }
 
 // Helper to reset fetch mock
