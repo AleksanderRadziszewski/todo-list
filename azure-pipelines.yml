@@ -103,6 +103,14 @@ stages:
               reportDirectory: "frontend/coverage"
             displayName: Publish Code Coverage
 
+          - script: |
+              echo "Current directory:"
+              pwd
+
+              echo "Files in frontend:"
+              find frontend -type f
+            displayName: Debug Test Files
+
   - stage: Build
     dependsOn: Test
     condition: succeeded()

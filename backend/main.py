@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers import router as tasks_router
 from azure.monitor.opentelemetry import configure_azure_monitor
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from routers.health import router as health_router
 
 configure_azure_monitor(
     connection_string=os.environ["APPLICATIONINSIGHTS_CONNECTION_STRING"]
@@ -12,6 +13,9 @@ configure_azure_monitor(
 
 app = FastAPI()
 FastAPIInstrumentor.instrument_app(app)
+
+app.include_router(tasks_router)
+app.include_router(health_router)
 
 app.add_middleware(
     CORSMiddleware,
