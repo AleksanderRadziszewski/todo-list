@@ -331,9 +331,19 @@ See `azure-pipelines.yml` for pipeline configuration details.
 
 2. Aplication monitoring.
 
+        a) metrics
+
 ![Metrics](./images/metrics.png)
 
-3. Aplication tests.
+        b) failed requests
+
+![Metrics](./images/app_insigths_failed_http.png)
+
+        c) end-to-end tansaction
+
+![Metrics](./images/end_to_end_transaction.png)
+
+3. Application tests.
 
 ![Tests](./images/tests.png)
 
