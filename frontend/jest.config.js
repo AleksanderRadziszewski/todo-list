@@ -3,6 +3,16 @@ export default {
   testEnvironment: 'jsdom',
   roots: ['<rootDir>/src'],
   collectCoverage: true,
+  reporters: [
+    'default',
+    [
+      'jest-junit',
+      {
+        outputDirectory: 'test-results',
+        outputName: 'junit.xml'
+      }
+    ]
+  ],
   coverageDirectory: "coverage",
   coverageReporters: ["cobertura", "lcov", "text"],
   testMatch: ['**/__tests__/**/*.ts?(x)', '**/?(*.)+(spec|test).ts?(x)'],

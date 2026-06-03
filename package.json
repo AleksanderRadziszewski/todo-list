@@ -2,9 +2,12 @@
   "devDependencies": {
     "jest-junit": "^17.0.0"
   },
-
   "jest": {
-    "coverageReporters": ["text", "cobertura", "lcov"],
+    "coverageReporters": [
+      "text",
+      "cobertura",
+      "lcov"
+    ],
     "testResultsProcessor": "jest-junit"
   },
   "jest-junit": {
