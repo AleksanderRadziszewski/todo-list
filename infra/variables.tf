@@ -32,7 +32,7 @@ variable "location" {
 }
 variable "app_service_sku" {
   type    = string
-  default = "B1"
+  default = "F1"
 }
 variable "postgres_sku" {
   type    = string
