@@ -329,7 +329,7 @@ See `azure-pipelines.yml` for pipeline configuration details.
 
 ![swa](https://github.com/user-attachments/assets/846f364c-aa80-48ad-b49d-4839fcfecb14)
 
-2. Aplication monitoring.
+2.  Aplication monitoring.
 
         a) metrics
 
@@ -346,6 +346,10 @@ See `azure-pipelines.yml` for pipeline configuration details.
 3. Application tests.
 
 ![Tests](./images/tests.png)
+
+4. Healthcheck metrics
+
+![Healthcheck](./images/healthcheck_metrics.png)
 
 ## License
 
